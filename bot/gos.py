@@ -36,6 +36,10 @@ rsf = "@zhenya_bruna(СМИ СФ)"
 rlv = "@zhenya_bruna(СМИ ЛВ)"
 
 
+# Developer
+
+access_dev = ["342420933"]
+
 # ГС/ЗГС ГОС
 
 access_full = ["489856771", "475362255", "342420933"]
@@ -73,6 +77,7 @@ access_spec_media = ["482497386"]
 statuses = ["main", "menu government", "menu co", "menu juctice", "menu health", "menu defense", "menu media"]
 
 accesses = access_full + access_full_government + access_spec_government + access_full_co + access_spec_co + acceess_full_justice + access_spec_justice + access_full_health + access_spec_health + access_full_defense + access_spec_defense + access_full_media + access_spec_media
+accesses_full = access_full + access_full_government + access_full_co + acceess_full_justice + access_full_health + access_full_defense + access_full_media
 
 statuses_menu_organizations = ["menu gcl", "menu stk", "menu cb", "menu lspd", "menu sfpd", "menu swat", "menu fbi", "menu rcsd", "menu lsmc", "menu sfmc", "menu lvmc", "menu lsa", "menu sfa", "menu msp", "menu rls", "menu rsf", "menu rlv"]
 
@@ -123,6 +128,8 @@ def getMainKeyboard():
     keyboard.add_line()
     keyboard.add_button("Меню МО", VkKeyboardColor.PRIMARY)
     keyboard.add_button("Меню СМИ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Меню настройки", VkKeyboardColor.PRIMARY)
     return keyboard
 
 
@@ -250,6 +257,18 @@ def getPunishKeyboard():
     keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
     return keyboard
 
+def getSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("Поставить лидера", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("Снять лидера", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Поставить следящего", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("Снять следящего", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Поставить ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("Снять ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
+    return keyboard
+
 
 def getKeyboardByStatus():
     if status == "main":
@@ -266,6 +285,8 @@ def getKeyboardByStatus():
         return getDefenseKeyboard()
     elif status == "menu media":
         return getMediaKeyboard()
+    elif status == "settings":
+        return getSettingsKeyboard()
     elif check_status(status):
         return getOrgKeyboard()
     elif status == "pred government":
@@ -274,6 +295,7 @@ def getKeyboardByStatus():
         return getGovernmentVigsKeyboard()
     elif status.startswith("pred") or status.startswith("vig"):
         return getPunishKeyboard()
+
 
 def makePunish(in_status, isPred, msg, id):
     target = getTarget(in_status)
@@ -398,6 +420,12 @@ while True:
                                     sender("Перехожу в ваше меню", id, getKeyboardByStatus())
                                 else:
                                     send_noaccess_message(id)
+                            elif msg == "меню настройки":
+                                if check_access(id, access_dev) or check_access(id, accesses_full) or check_access(accesses_full):
+                                    status = "settings"
+                                    sender("Перехожу в меню настроек", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав! Чтобы получить доступ отпишите @zhenya_bruna(Жене Ветрову)")
                             else:
                                 sender("Начинаю свою работу", id, getKeyboardByStatus())
                         elif status == "menu government":
