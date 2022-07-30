@@ -9,6 +9,8 @@ bot_id = 213622107
 
 longpoll = VkBotLongPoll(vk_session, bot_id)
 
+save_file = "C:\\Users\\pewde\\PycharmProjects\\Coffe-Plantation\\bot\\load.txt"
+
 status = "main"
 
 gsv = "@zhenya_bruna(ГСВ)"
@@ -56,7 +58,7 @@ access_spec_co = ["543775126", "547781950", "100437381"]
 
 # Department of Justice
 
-acceess_full_justice = ["360669127", "481698071"]
+access_full_justice = ["360669127", "481698071"]
 access_spec_justice = ["454427393", "435861554", "561978801", "30732603"]
 
 # Department of Health
@@ -76,8 +78,156 @@ access_spec_media = ["482497386"]
 
 statuses = ["main", "menu government", "menu co", "menu juctice", "menu health", "menu defense", "menu media"]
 
-accesses = access_full + access_full_government + access_spec_government + access_full_co + access_spec_co + acceess_full_justice + access_spec_justice + access_full_health + access_spec_health + access_full_defense + access_spec_defense + access_full_media + access_spec_media
-accesses_full = access_full + access_full_government + access_full_co + acceess_full_justice + access_full_health + access_full_defense + access_full_media
+def clearVariables():
+    access_full.clear()
+    access_full_government.clear()
+    access_spec_government.clear()
+    access_full_co.clear()
+    access_spec_co.clear()
+    access_full_justice.clear()
+    access_spec_justice.clear()
+    access_full_health.clear()
+    access_spec_health.clear()
+    access_full_defense.clear()
+    access_spec_defense.clear()
+    access_full_media.clear()
+    access_spec_media.clear()
+
+def saveVariables():
+    file = open(save_file, 'w')
+    for el in access_full:
+        file.write("af " + el + "\n")
+    for el in access_full_government:
+        file.write("afg " + el + "\n")
+    for el in access_spec_government:
+        file.write("asg " + el + "\n")
+    for el in access_full_co:
+        file.write("afc " + el + "\n")
+    for el in access_spec_co:
+        file.write("asc " + el + "\n")
+    for el in access_full_justice:
+        file.write("afj " + el + "\n")
+    for el in access_spec_justice:
+        file.write("asj " + el + "\n")
+    for el in access_full_health:
+        file.write("afh " + el + "\n")
+    for el in access_spec_health:
+        file.write("afg " + el + "\n")
+    for el in access_full_defense:
+        file.write("afd " + el + "\n")
+    for el in access_spec_defense:
+        file.write("asd " + el + "\n")
+    for el in access_full_media:
+        file.write("afm " + el + "\n")
+    for el in access_spec_media:
+        file.write("asm " + el + "\n")
+    file.write("gsv " + gsv + "\n")
+    file.write("gcv " + gcv + "\n")
+    file.write("st " + st + "\n")
+    file.write("judge " + judge + "\n")
+    file.write("guber " + guber + "\n")
+    file.write("gp " + gp + "\n")
+    file.write("gcl " + gcl + "\n")
+    file.write("stk " + stk + "\n")
+    file.write("cb " + cb + "\n")
+    file.write("lspd " + lspd + "\n")
+    file.write("sfpd " + sfpd + "\n")
+    file.write("rcsd " + rcsd + "\n")
+    file.write("swat " + swat + "\n")
+    file.write("fbi " + fbi + "\n")
+    file.write("lsmc " + lsmc + "\n")
+    file.write("sfmc " + sfmc + "\n")
+    file.write("lvmc " + lvmc + "\n")
+    file.write("lsa " + lsa + "\n")
+    file.write("sfa " + sfa + "\n")
+    file.write("msp " + msp + "\n")
+    file.write("rls " + rls + "\n")
+    file.write("rsf " + rsf + "\n")
+    file.write("rlv " + rlv + "\n")
+    file.close()
+
+
+def loadVariables():
+    clearVariables()
+    file = open(save_file, 'r')
+    for line in file:
+        if line.startswith("af "):
+            access_full.append(line)
+        elif line.startswith("afg "):
+            access_full_government.append(line)
+        elif line.startswith("asg "):
+            access_spec_government.append(line)
+        elif line.startswith("afc "):
+            access_full_co.append(line)
+        elif line.startswith("asc "):
+            access_spec_co.append(line)
+        elif line.startswith("afj "):
+            access_full_justice.append(line)
+        elif line.startswith("asj "):
+            access_spec_justice.append(line)
+        elif line.startswith("afh "):
+            access_full_health.append(line)
+        elif line.startswith("ash "):
+            access_spec_health.append(line)
+        elif line.startswith("afd "):
+            access_full_defense.append(line)
+        elif line.startswith("asd "):
+            access_spec_defense.append(line)
+        elif line.startswith("afm "):
+            access_full_media.append(line)
+        elif line.startswith("asm "):
+            access_spec_media.append(line)
+        elif line.startswith("gsv "):
+            gsv = line
+        elif line.startswith("gcv "):
+            gcv = line
+        elif line.startswith("st "):
+            st = line
+        elif line.startswith("judge "):
+            judge = line
+        elif line.startswith("guber "):
+            guber = line
+        elif line.startswith("gp "):
+            gp = line
+        elif line.startswith("gcl "):
+            gcl = line
+        elif line.startswith("stk "):
+            stk = line
+        elif line.startswith("cb "):
+            cb = line
+        elif line.startswith("lspd "):
+            lspd = line
+        elif line.startswith("sfpd "):
+            sfpd = line
+        elif line.startswith("rcsd "):
+            rcsd = line
+        elif line.startswith("swat "):
+            swat = line
+        elif line.startswith("fbi "):
+            fbi = line
+        elif line.startswith("lsmc "):
+            lsmc = line
+        elif line.startswith("sfmc "):
+            sfmc = line
+        elif line.startswith("lvmc "):
+            lvmc = line
+        elif line.startswith("lsa "):
+            lsa = line
+        elif line.startswith("sfa "):
+            sfa = line
+        elif line.startswith("msp "):
+            msp = line
+        elif line.startswith("rls "):
+            rls = line
+        elif line.startswith("rsf "):
+            rsf = line
+        elif line.startswith("rlv "):
+            rlv = line
+    file.close()
+
+
+accesses = access_full + access_full_government + access_spec_government + access_full_co + access_spec_co + access_full_justice + access_spec_justice + access_full_health + access_spec_health + access_full_defense + access_spec_defense + access_full_media + access_spec_media
+accesses_full = access_full + access_full_government + access_full_co + access_full_justice + access_full_health + access_full_defense + access_full_media
 
 statuses_menu_organizations = ["menu gcl", "menu stk", "menu cb", "menu lspd", "menu sfpd", "menu swat", "menu fbi", "menu rcsd", "menu lsmc", "menu sfmc", "menu lvmc", "menu lsa", "menu sfa", "menu msp", "menu rls", "menu rsf", "menu rlv"]
 
@@ -271,13 +421,6 @@ def getSettingsKeyboard():
     keyboard.add_button("Снять ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
     return keyboard
 
-def saveVariables():
-    file = open("название файла", w)
-    for el in accesses:
-        text = "твой код тут"
-
-def loadVariables():
-    text = ""
 
 def getSettingsLeaderKeyboard():
     keyboard = VkKeyboard()
@@ -404,7 +547,7 @@ while True:
                                 else:
                                     send_noaccess_message(id)
                             elif msg == "меню мю":
-                                if check_access(id, acceess_full_justice) or check_access(id,
+                                if check_access(id, access_full_justice) or check_access(id,
                                                                                           access_spec_justice) or check_access(
                                         id, access_full):
                                     status = "menu justice"
