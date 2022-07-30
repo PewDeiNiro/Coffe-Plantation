@@ -88,6 +88,8 @@ def check_status(status):
             return True
     return False
 
+
+
 def check_access(user_id, list):
     for id in list:
         if str(id) == str(user_id):
@@ -268,6 +270,19 @@ def getSettingsKeyboard():
     keyboard.add_button("Поставить ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
     keyboard.add_button("Снять ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
     return keyboard
+
+def saveVariables():
+    file = open("название файла", w)
+    for el in accesses:
+        text = "твой код тут"
+
+def loadVariables():
+    text = ""
+
+def getSettingsLeaderKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("Пра-во", VkKeyboardColor.PRIMARY)
+    keyboard
 
 
 def getKeyboardByStatus():
@@ -966,6 +981,21 @@ while True:
                                 if not ("stk" in status) and "st" in status:
                                     status = status.replace("st", "government")
                                 sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "settings":
+                            if msg == "поставить лидера":
+                                status = "set leader"
+                            elif msg == "снять лидера":
+                                status = "del leader"
+                            elif msg == "поставить следящего":
+                                status = "set watcher"
+                            elif msg == "снять следящего":
+                                status = "del watcher"
+                            elif msg == "поставить гса или згса":
+                                if check_access(id, access_dev) or check_access(id, access_full):
+                                    status = "set full watcher"
+                            elif msg == "снять гса или згса":
+                                if check_access(id, access_dev) or check_access(id, access_full):
+                                    status = "del full watcher"
                     else:
                         send_noaccess_message(id, False)
 
