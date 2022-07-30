@@ -19,7 +19,7 @@ st = "@zhenya_bruna(СТ)"
 judge = "@zhenya_bruna(Судья)"
 gp = "@zhenya_bruna(ГП)"
 guber = "@zhenya_bruna(Губернатор)"
-gcl = "@zhenya_bruna(ГЦЛ)"
+gcl = "1"
 stk = "@zhenya_bruna(СтК)"
 cb = "@zhenya_bruna(ЦБ)"
 lspd = "@zhenya_bruna(ЛСПД)"
@@ -146,84 +146,149 @@ def saveVariables():
     file.write("rlv " + rlv + "\n")
     file.close()
 
+def getFunctionalVkId(msg):
+    result = msg.split("|")[1].replace("]", "")
+    return result
 
 def loadVariables():
     clearVariables()
     file = open(save_file, 'r')
     for line in file:
         if line.startswith("af "):
+            line = line.replace("af ", "")
             access_full.append(line)
-        elif line.startswith("afg "):
+        if line.startswith("afg "):
+            line = line.replace("afg ", "")
             access_full_government.append(line)
-        elif line.startswith("asg "):
+        if line.startswith("asg "):
+            line = line.replace("asg ", "")
             access_spec_government.append(line)
-        elif line.startswith("afc "):
+        if line.startswith("afc "):
+            line = line.replace("afc ", "")
             access_full_co.append(line)
-        elif line.startswith("asc "):
+        if line.startswith("asc "):
+            line = line.replace("asc ", "")
             access_spec_co.append(line)
-        elif line.startswith("afj "):
+        if line.startswith("afj "):
+            line = line.replace("afj ", "")
             access_full_justice.append(line)
-        elif line.startswith("asj "):
+        if line.startswith("asj "):
+            line = line.replace("asj ", "")
             access_spec_justice.append(line)
-        elif line.startswith("afh "):
+        if line.startswith("afh "):
+            line = line.replace("afh ", "")
             access_full_health.append(line)
-        elif line.startswith("ash "):
+        if line.startswith("ash "):
+            line = line.replace("ash ", "")
             access_spec_health.append(line)
-        elif line.startswith("afd "):
+        if line.startswith("afd "):
+            line = line.replace("afd ", "")
             access_full_defense.append(line)
-        elif line.startswith("asd "):
+        if line.startswith("asd "):
+            line = line.replace("asd ", "")
             access_spec_defense.append(line)
-        elif line.startswith("afm "):
+        if line.startswith("afm "):
+            line = line.replace("afm ", "")
             access_full_media.append(line)
-        elif line.startswith("asm "):
+        if line.startswith("asm "):
+            line = line.replace("asm ", "")
             access_spec_media.append(line)
-        elif line.startswith("gsv "):
+        if line.startswith("gsv "):
+            line = line.replace("gsv ", "").replace("\n", "")
+            global gsv
             gsv = line
-        elif line.startswith("gcv "):
+        if line.startswith("gcv "):
+            line = line.replace("gcv ", "").replace("\n", "")
+            global gcv
             gcv = line
-        elif line.startswith("st "):
+        if line.startswith("st "):
+            line = line.replace("st ", "").replace("\n", "")
+            global st
             st = line
-        elif line.startswith("judge "):
+        if line.startswith("judge "):
+            line = line.replace("judge ", "").replace("\n", "")
+            global judge
             judge = line
-        elif line.startswith("guber "):
+        if line.startswith("guber "):
+            line = line.replace("guber ", "").replace("\n", "")
+            global guber
             guber = line
-        elif line.startswith("gp "):
+        if line.startswith("gp "):
+            line = line.replace("gp ", "").replace("\n", "")
+            global gp
             gp = line
-        elif line.startswith("gcl "):
+        if line.startswith("gcl "):
+            line = line.replace("gcl ", "").replace("\n", "")
+            global gcl
             gcl = line
-        elif line.startswith("stk "):
+        if line.startswith("stk "):
+            line = line.replace("stk ", "").replace("\n", "")
+            global stk
             stk = line
-        elif line.startswith("cb "):
+        if line.startswith("cb "):
+            line = line.replace("cb ", "").replace("\n", "")
+            global cb
             cb = line
-        elif line.startswith("lspd "):
+        if line.startswith("lspd "):
+            line = line.replace("lspd ", "").replace("\n", "")
+            global lspd
             lspd = line
-        elif line.startswith("sfpd "):
+        if line.startswith("sfpd "):
+            line = line.replace("sfpd ", "").replace("\n", "")
+            global sfpd
             sfpd = line
-        elif line.startswith("rcsd "):
+        if line.startswith("rcsd "):
+            line = line.replace("rcsd ", "").replace("\n", "")
+            global rcsd
             rcsd = line
-        elif line.startswith("swat "):
+        if line.startswith("swat "):
+            line = line.replace("swat ", "").replace("\n", "")
+            global swat
             swat = line
-        elif line.startswith("fbi "):
+        if line.startswith("fbi "):
+            line = line.replace("fbi ", "").replace("\n", "")
+            global fbi
             fbi = line
-        elif line.startswith("lsmc "):
+        if line.startswith("lsmc "):
+            line = line.replace("lsmc ", "").replace("\n", "")
+            global lsmc
             lsmc = line
-        elif line.startswith("sfmc "):
+        if line.startswith("sfmc "):
+            line = line.replace("sfmc ", "").replace("\n", "")
+            global sfmc
             sfmc = line
-        elif line.startswith("lvmc "):
+        if line.startswith("lvmc "):
+            line = line.replace("lvmc ", "").replace("\n", "")
+            global lvmc
             lvmc = line
-        elif line.startswith("lsa "):
+        if line.startswith("lsa "):
+            line = line.replace("lsa ", "").replace("\n", "")
+            global lsa
             lsa = line
-        elif line.startswith("sfa "):
+        if line.startswith("sfa "):
+            line = line.replace("sfa ", "").replace("\n", "")
+            global sfa
             sfa = line
-        elif line.startswith("msp "):
+        if line.startswith("msp "):
+            line = line.replace("msp ", "").replace("\n", "")
+            global msp
             msp = line
-        elif line.startswith("rls "):
+        if line.startswith("rls "):
+            line = line.replace("rls ", "").replace("\n", "")
+            global rls
             rls = line
-        elif line.startswith("rsf "):
+        if line.startswith("rsf "):
+            line = line.replace("rsf ", "").replace("\n", "")
+            global rsf
             rsf = line
-        elif line.startswith("rlv "):
+        if line.startswith("rlv "):
+            line = line.replace("rlv ", "").replace("\n", "")
+            global rlv
             rlv = line
     file.close()
+
+loadVariables()
+
 
 
 accesses = access_full + access_full_government + access_spec_government + access_full_co + access_spec_co + access_full_justice + access_spec_justice + access_full_health + access_spec_health + access_full_defense + access_spec_defense + access_full_media + access_spec_media
@@ -242,7 +307,7 @@ def check_status(status):
 
 def check_access(user_id, list):
     for id in list:
-        if str(id) == str(user_id):
+        if str(id).strip() == str(user_id).strip():
             return True
     return False
 
@@ -419,13 +484,91 @@ def getSettingsKeyboard():
     keyboard.add_line()
     keyboard.add_button("Поставить ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
     keyboard.add_button("Снять ГСа или ЗГСа", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
     return keyboard
 
 
 def getSettingsLeaderKeyboard():
     keyboard = VkKeyboard()
     keyboard.add_button("Пра-во", VkKeyboardColor.PRIMARY)
-    keyboard
+    keyboard.add_button("ЦА", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("МЮ", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("МЗ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("МО", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("СМИ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
+def getGovernmentSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("ГСВ", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("ГКВ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("СТ", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("Судья", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Губернатор", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("ГП", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
+def getCoSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("ГЦЛ", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("СтК", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("ЦБ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
+def getJusticeSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("ЛСПД", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("СФПД", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("РКШД", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("СВАТ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("ФБР", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
+def getHealthSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("ЛСМЦ", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("СФМЦ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("ЛВМЦ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
+def getDefenceSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("ЛСа", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("ВМС", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("ТСР", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
+def getMediaSettingsKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("СМИ ЛС", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("СМИ СФ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("СМИ ЛВ", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
 
 
 def getKeyboardByStatus():
@@ -445,14 +588,28 @@ def getKeyboardByStatus():
         return getMediaKeyboard()
     elif status == "settings":
         return getSettingsKeyboard()
+    elif "settings government" in status:
+        return getGovernmentSettingsKeyboard()
+    elif "settings co" in status:
+        return  getCoSettingsKeyboard()
+    elif "settings justice" in status:
+        return getJusticeSettingsKeyboard()
+    elif "settings health" in status:
+        return getHealthSettingsKeyboard()
+    elif "settings defence" in status:
+        return getDefenceSettingsKeyboard()
+    elif "settings media" in status:
+        return getMediaSettingsKeyboard()
     elif check_status(status):
         return getOrgKeyboard()
     elif status == "pred government":
         return getGovernmentPredsKeyboard()
     elif status == "vig government":
         return getGovernmentVigsKeyboard()
-    elif status.startswith("pred") or status.startswith("vig"):
+    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting"):
         return getPunishKeyboard()
+    elif status == "set leader" or status == "del leader" or status == "set spectator" or status == "del spectator" or status == "set full spectator" or status == "del full spectator":
+        return getSettingsLeaderKeyboard()
 
 
 def makePunish(in_status, isPred, msg, id):
@@ -1127,18 +1284,534 @@ while True:
                         elif status == "settings":
                             if msg == "поставить лидера":
                                 status = "set leader"
+                                sender("Идем ставить лидера!", id, getKeyboardByStatus())
                             elif msg == "снять лидера":
                                 status = "del leader"
+                                sender("Идем снимать лидера!", id, getKeyboardByStatus())
                             elif msg == "поставить следящего":
-                                status = "set watcher"
+                                status = "set spectator"
+                                sender("Идем ставить следящего!", id, getKeyboardByStatus())
                             elif msg == "снять следящего":
-                                status = "del watcher"
+                                status = "del spectator"
+                                sender("Идем снимать следящего!", id, getKeyboardByStatus())
                             elif msg == "поставить гса или згса":
                                 if check_access(id, access_dev) or check_access(id, access_full):
-                                    status = "set full watcher"
+                                    status = "set full spectator"
+                                    sender("Идем ставить ГСа/ЗГСа!", id, getKeyboardByStatus())
                             elif msg == "снять гса или згса":
                                 if check_access(id, access_dev) or check_access(id, access_full):
-                                    status = "del full watcher"
+                                    status = "del full spectator"
+                                    sender("Идем снимать ГСа/ЗГСа!", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "main"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "set leader":
+                            if msg == "пра-во":
+                                status = "set settings government"
+                                sender("Переходим в меню настроек лидеров правительства!", id, getKeyboardByStatus())
+                            elif msg == "ца":
+                                status = "set settings co"
+                                sender("Переходим в меню настроек лидеров ЦА!", id, getKeyboardByStatus())
+                            elif msg == "мю":
+                                status = "set settings justice"
+                                sender("Переходим в меню настроек лидеров МЮ!", id, getKeyboardByStatus())
+                            elif msg == "мз":
+                                status = "set settings health"
+                                sender("Переходим в меню настроек лидеров МЗ!", id, getKeyboardByStatus())
+                            elif msg == "мо":
+                                status = "set settings defence"
+                                sender("Переходим в меню настроек лидеров МО!", id, getKeyboardByStatus())
+                            elif msg == "сми":
+                                status = "set settings media"
+                                sender("Переходим в меню настроек лидеров СМИ!", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "settings"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "del leader":
+                            if msg == "пра-во":
+                                status = "del settings government"
+                                sender("Переходим в меню настроек лидеров правительства!", id, getKeyboardByStatus())
+                            elif msg == "ца":
+                                status = "del settings co"
+                                sender("Переходим в меню настроек лидеров ЦА!", id, getKeyboardByStatus())
+                            elif msg == "мю":
+                                status = "del settings justice"
+                                sender("Переходим в меню настроек лидеров МЮ!", id, getKeyboardByStatus())
+                            elif msg == "мз":
+                                status = "del settings health"
+                                sender("Переходим в меню настроек лидеров МЗ!", id, getKeyboardByStatus())
+                            elif msg == "мо":
+                                status = "del settings defence"
+                                sender("Переходим в меню настроек лидеров МО!", id, getKeyboardByStatus())
+                            elif msg == "сми":
+                                status = "del settings media"
+                                sender("Переходим в меню настроек лидеров СМИ!", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "settings"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "set settings government":
+                            if msg == "гсв":
+                                status = "waiting gsv"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "гкв":
+                                status = "waiting gcv"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "ст":
+                                status = "waiting st"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "судья":
+                                status = "waiting judge"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "губернатор":
+                                status = "waiting guber"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "гп":
+                                status = "waiting gp"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set leader"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "set settings co":
+                            if msg == "гцл":
+                                status = "waiting gcl"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "стк":
+                                status = "waiting stk"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "цб":
+                                status = "waiting cb"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "set settings justice":
+                            if msg == "лспд":
+                                status = "waiting lspd"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "сфпд":
+                                status = "waiting sfpd"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "ркшд":
+                                status = "waiting rcsd"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "сват":
+                                status = "waiting swat"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "фбр":
+                                status = "waiting fbi"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "set settings health":
+                            if msg == "лсмц":
+                                status = "waiting lsmc"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "сфмц":
+                                status = "waiting sfmc"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "лвмц":
+                                status = "waiting lvmc"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "set settings defence":
+                            if msg == "лса":
+                                status = "waiting lsa"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "вмс":
+                                status = "waiting sfa"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "тср":
+                                status = "waiting msp"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "set settings media":
+                            if msg == "сми лс":
+                                status = "waiting rls"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "сми сф":
+                                status = "waiting rsf"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "сми лв":
+                                status = "waiting rlv"
+                                sender("Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "del settings government":
+                            if msg == "гсв":
+                                gsv = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "гкв":
+                                gcv = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "ст":
+                                st = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "судья":
+                                judge = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "губернатор":
+                                guber = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "гп":
+                                gp = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "обратно":
+                                status = "del leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "del settings co":
+                            if msg == "гцл":
+                                gcl = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "стк":
+                                stk = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "цб":
+                                cb = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "обратно":
+                                status = "del leader"
+                                sender("Возращаемся назад!", id, getKeyboardByStatus())
+                        elif status == "del settings justice":
+                            if msg == "лспд":
+                                lspd = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "сфпд":
+                                sfpd = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "ркшд":
+                                rcsd = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "сват":
+                                swat = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "фбр":
+                                fbi = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "обратно":
+                                status = "del leader"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "del settings health":
+                            if msg == "лсмц":
+                                lsmc = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "сфмц":
+                                sfmc = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "лвмц":
+                                lvmc = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "обратно":
+                                status = "del leader"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "del settings defence":
+                            if msg == "лса":
+                                lsa = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "вмс":
+                                sfa = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "тср":
+                                msp = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "обратно":
+                                status = "del leader"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "del settings media":
+                            if msg == "сми лс":
+                                rls = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "сми сф":
+                                rsf = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "сми лв":
+                                rlv = "Снят"
+                                sender("Лидер успешно снят!", id, getKeyboardByStatus())
+                                saveVariables()
+                            elif msg == "обратно":
+                                status = "del leader"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "waiting gsv":
+                            if "@" in msg:
+                                gsv = getFunctionalVkId(msg) + "(ГСВ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings government"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting gcv":
+                            if "@" in msg:
+                                gcv = getFunctionalVkId(msg) + "(ГКВ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings government"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting st":
+                            if "@" in msg:
+                                st = getFunctionalVkId(msg) + "(СТ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings government"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting judge":
+                            if "@" in msg:
+                                judge = getFunctionalVkId(msg) + "(Судья)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings government"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting guber":
+                            if "@" in msg:
+                                guber = getFunctionalVkId(msg) + "(Губернатор)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings government"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting gp":
+                            if "@" in msg:
+                                gp = getFunctionalVkId(msg) + "(ГП)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings government"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting gcl":
+                            if "@" in msg:
+                                gcl = getFunctionalVkId(msg) + "(ГЦЛ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings co"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting stk":
+                            if "@" in msg:
+                                stk = getFunctionalVkId(msg) + "(СтК)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings co"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting cb":
+                            if "@" in msg:
+                                cb = getFunctionalVkId(msg) + "(ЦБ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings co"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting lspd":
+                            if "@" in msg:
+                                lspd = getFunctionalVkId(msg) + "(ЛСПД)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings justice"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting sfpd":
+                            if "@" in msg:
+                                sfpd = getFunctionalVkId(msg) + "(СФПД)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings justice"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting rcsd":
+                            if "@" in msg:
+                                rcsd = getFunctionalVkId(msg) + "(РКШД)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings justice"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting swat":
+                            if "@" in msg:
+                                swat = getFunctionalVkId(msg) + "(СВАТ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings justice"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting fbi":
+                            if "@" in msg:
+                                fbi = getFunctionalVkId(msg) + "(ФБР)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings justice"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting lsmc":
+                            if "@" in msg:
+                                lsmc = getFunctionalVkId(msg) + "(ЛСМЦ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings health"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting sfmc":
+                            if "@" in msg:
+                                sfmc = getFunctionalVkId(msg) + "(СФМЦ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings health"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting lvmc":
+                            if "@" in msg:
+                                lvmc = getFunctionalVkId(msg) + "(ЛВМЦ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings health"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting lsa":
+                            if "@" in msg:
+                                lsa = getFunctionalVkId(msg) + "(ЛСа)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings defence"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting sfa":
+                            if "@" in msg:
+                                sfa = getFunctionalVkId(msg) + "(ВМС)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings defence"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting msp":
+                            if "@" in msg:
+                                msp = getFunctionalVkId(msg) + "(ТСР)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings defence"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting rls":
+                            if "@" in msg:
+                                rls = getFunctionalVkId(msg) + "(СМИ ЛС)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings media"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id,
+                                           getKeyboardByStatus())
+                        elif status == "waiting rsf":
+                            if "@" in msg:
+                                rsf = getFunctionalVkId(msg) + "(СМИ СФ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings media"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "waiting rlv":
+                            if "@" in msg:
+                                rlv = getFunctionalVkId(msg) + "(СМИ ЛВ)"
+                                saveVariables()
+                                sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
+                            else:
+                                if msg == "обратно":
+                                    status = "set settings media"
+                                    sender("Возращаемся назад!", id, getKeyboardByStatus())
+                                else:
+                                    sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
                     else:
                         send_noaccess_message(id, False)
 
