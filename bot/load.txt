@@ -1,23 +1,15 @@
-af 489856771
-
 af 475362255
 
 af 342420933
 
 afg 608273181
 
-afg 466657339
-
 afg 450908343
-
-afg 482497386
 
 asg 665664706
 
-afc 342420933
-
 afc 471076385
-
+afc 
 asc 543775126
 
 asc 547781950
@@ -36,9 +28,18 @@ asj 561978801
 
 asj 30732603
 
-afh 676100115
+afh 
+afh 
+
+ash 466657339
+
+ash 450908343
+
+ash 482497386
 
 afd 341995691
+
+afd 
 
 asd 709048695
 
@@ -56,8 +57,8 @@ st @zhenya_bruna(ÑÒ)
 judge @zhenya_bruna(Ñóäüÿ)
 guber @zhenya_bruna(Ãóáåğíàòîğ)
 gp @zhenya_bruna(ÃÏ)
-gcl @id100437381(ÃÖË)
-stk @id100437381(ÑòÊ)
+gcl 1
+stk @zhenya_bruna(ÑòÊ)
 cb @zhenya_bruna(ÖÁ)
 lspd @zhenya_bruna(ËÑÏÄ)
 sfpd @zhenya_bruna(ÑÔÏÄ)
@@ -69,7 +70,7 @@ sfmc @zhenya_bruna(ÑÔÌÖ)
 lvmc @zhenya_bruna(ËÂÌÖ)
 lsa @zhenya_bruna(ËÑà)
 sfa @zhenya_bruna(ÂÌÑ)
-msp @id100437381(ÒÑĞ)
+msp @zhenya_bruna(ÒÑĞ)
 rls @zhenya_bruna(ÑÌÈ ËÑ)
 rsf @zhenya_bruna(ÑÌÈ ÑÔ)
 rlv @zhenya_bruna(ÑÌÈ ËÂ)

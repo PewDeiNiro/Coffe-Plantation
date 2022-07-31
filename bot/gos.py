@@ -44,11 +44,11 @@ access_dev = ["342420933"]
 
 # ГС/ЗГС ГОС
 
-access_full = ["489856771", "475362255", "342420933"]
+access_full = ["475362255", "342420933"]
 
 # Government
 
-access_full_government = ["608273181"]
+access_full_government = ["608273181", "450908343"]
 access_spec_government = ["665664706"]
 
 # Central Office
@@ -63,12 +63,12 @@ access_spec_justice = ["454427393", "435861554", "561978801", "30732603"]
 
 # Department of Health
 
-access_full_health = ["676100115"]
+access_full_health = ["676100115", ""]
 access_spec_health = ["466657339", "450908343", "482497386"]
 
 # Departament of Defense
 
-access_full_defense = ["341995691"]
+access_full_defense = ["341995691", ""]
 access_spec_defense = ["709048695", "522188393"]
 
 # Mass Media
@@ -77,6 +77,12 @@ access_full_media = ["454108081", "572994700"]
 access_spec_media = ["482497386"]
 
 statuses = ["main", "menu government", "menu co", "menu juctice", "menu health", "menu defense", "menu media"]
+
+def checkValidId(id):
+    if id.isdigit() and len(id) == 9:
+        return True
+    else:
+        return False
 
 def clearVariables():
     access_full.clear()
@@ -112,7 +118,7 @@ def saveVariables():
     for el in access_full_health:
         file.write("afh " + el + "\n")
     for el in access_spec_health:
-        file.write("afg " + el + "\n")
+        file.write("ash " + el + "\n")
     for el in access_full_defense:
         file.write("afd " + el + "\n")
     for el in access_spec_defense:
@@ -145,6 +151,7 @@ def saveVariables():
     file.write("rsf " + rsf + "\n")
     file.write("rlv " + rlv + "\n")
     file.close()
+
 
 def getFunctionalVkId(msg):
     result = msg.split("|")[1].replace("]", "")
@@ -336,6 +343,7 @@ def chat_sender(text, id):
 
 
 def getMainKeyboard():
+    status = "main"
     keyboard = VkKeyboard()
     keyboard.add_button("Меню Пра-Во", VkKeyboardColor.PRIMARY)
     keyboard.add_button("Меню ЦА", VkKeyboardColor.PRIMARY)
@@ -570,6 +578,15 @@ def getMediaSettingsKeyboard():
     keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
     return keyboard
 
+def getChoosingAccessKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("ГСа", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("ЗГСа", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
+
 
 def getKeyboardByStatus():
     if status == "main":
@@ -600,13 +617,15 @@ def getKeyboardByStatus():
         return getDefenceSettingsKeyboard()
     elif "settings media" in status:
         return getMediaSettingsKeyboard()
+    elif "choosing access" in status or "choosing set" in status:
+        return getChoosingAccessKeyboard()
     elif check_status(status):
         return getOrgKeyboard()
     elif status == "pred government":
         return getGovernmentPredsKeyboard()
     elif status == "vig government":
         return getGovernmentVigsKeyboard()
-    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting"):
+    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs"):
         return getPunishKeyboard()
     elif status == "set leader" or status == "del leader" or status == "set spectator" or status == "del spectator" or status == "set full spectator" or status == "del full spectator":
         return getSettingsLeaderKeyboard()
@@ -682,7 +701,9 @@ while True:
                     id = event.object.message["from_id"]
                     message = event.object.message["text"]
                     msg = message.lower()
-
+                    if msg == "обновить":
+                        status = "main"
+                        sender("Бот успешно обновил свою работу!", id, getKeyboardByStatus())
                     if check_access(id, accesses):
                         if msg == "откат":
                             status = "main"
@@ -740,9 +761,7 @@ while True:
                                     status = "settings"
                                     sender("Перехожу в меню настроек", id, getKeyboardByStatus())
                                 else:
-                                    sender("У вас недостаточно прав! Чтобы получить доступ отпишите @zhenya_bruna(Жене Ветрову)")
-                            else:
-                                sender("Начинаю свою работу", id, getKeyboardByStatus())
+                                    sender("У вас недостаточно прав! Чтобы получить доступ отпишите @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                         elif status == "menu government":
                             if msg == "обратно":
                                 status = "main"
@@ -1307,45 +1326,81 @@ while True:
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "set leader":
                             if msg == "пра-во":
-                                status = "set settings government"
-                                sender("Переходим в меню настроек лидеров правительства!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_government):
+                                    status = "set settings government"
+                                    sender("Переходим в меню настроек лидеров правительства!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "ца":
-                                status = "set settings co"
-                                sender("Переходим в меню настроек лидеров ЦА!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_co):
+                                    status = "set settings co"
+                                    sender("Переходим в меню настроек лидеров ЦА!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "мю":
-                                status = "set settings justice"
-                                sender("Переходим в меню настроек лидеров МЮ!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_justice):
+                                    status = "set settings justice"
+                                    sender("Переходим в меню настроек лидеров МЮ!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "мз":
-                                status = "set settings health"
-                                sender("Переходим в меню настроек лидеров МЗ!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_health):
+                                    status = "set settings health"
+                                    sender("Переходим в меню настроек лидеров МЗ!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "мо":
-                                status = "set settings defence"
-                                sender("Переходим в меню настроек лидеров МО!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_defense):
+                                    status = "set settings defence"
+                                    sender("Переходим в меню настроек лидеров МО!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "сми":
-                                status = "set settings media"
-                                sender("Переходим в меню настроек лидеров СМИ!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_media):
+                                    status = "set settings media"
+                                    sender("Переходим в меню настроек лидеров СМИ!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "обратно":
                                 status = "settings"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "del leader":
                             if msg == "пра-во":
-                                status = "del settings government"
-                                sender("Переходим в меню настроек лидеров правительства!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_government):
+                                    status = "del settings government"
+                                    sender("Переходим в меню настроек лидеров правительства!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "ца":
-                                status = "del settings co"
-                                sender("Переходим в меню настроек лидеров ЦА!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_co):
+                                    status = "del settings co"
+                                    sender("Переходим в меню настроек лидеров ЦА!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "мю":
-                                status = "del settings justice"
-                                sender("Переходим в меню настроек лидеров МЮ!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_justice):
+                                    status = "del settings justice"
+                                    sender("Переходим в меню настроек лидеров МЮ!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "мз":
-                                status = "del settings health"
-                                sender("Переходим в меню настроек лидеров МЗ!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_health):
+                                    status = "del settings health"
+                                    sender("Переходим в меню настроек лидеров МЗ!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "мо":
-                                status = "del settings defence"
-                                sender("Переходим в меню настроек лидеров МО!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_defense):
+                                    status = "del settings defence"
+                                    sender("Переходим в меню настроек лидеров МО!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "сми":
-                                status = "del settings media"
-                                sender("Переходим в меню настроек лидеров СМИ!", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_media):
+                                    status = "del settings media"
+                                    sender("Переходим в меню настроек лидеров СМИ!", id, getKeyboardByStatus())
+                                else:
+                                    sender("У вас недостаточно прав доступа! За получением прав обратитесь к @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
                             elif msg == "обратно":
                                 status = "settings"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
@@ -1812,6 +1867,533 @@ while True:
                                     sender("Возращаемся назад!", id, getKeyboardByStatus())
                                 else:
                                     sender("Ошибка! Отправьте ссылку на нового лидера в формате @vk_id", id, getKeyboardByStatus())
+                        elif status == "del full spectator":
+                            if msg == "пра-во":
+                                status = "choosing access government"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "ца":
+                                status = "choosing access co"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "мю":
+                                status = "choosing access justice"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "мз":
+                                status = "choosing access health"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "мо":
+                                status = "choosing access defence"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "сми":
+                                status = "choosing access media"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "settings"
+                                sender("Возращаемся обратно", id, getKeyboardByStatus())
+                        elif status == "choosing access government":
+                            if msg == "гса":
+                                sender(
+                                    "Вас сняли с должности ГСа Пра-во!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_government[0]), getMainKeyboard())
+                                access_full_government[0] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ГСа Пра-во", id, getKeyboardByStatus())
+                            elif msg == "згса":
+                                sender(
+                                    "Вас сняли с должности ЗГСа Пра-во!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_government[1]), getMainKeyboard())
+                                access_full_government[1] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ЗГСа Пра-во", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "del full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing access co":
+                            if msg == "гса":
+                                sender(
+                                    "Вас сняли с должности ГСа ЦА!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_co[0]), getMainKeyboard())
+                                access_full_co[0] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ГСа ЦА", id, getKeyboardByStatus())
+                            elif msg == "згса":
+                                sender(
+                                    "Вас сняли с должности ЗГСа ЦА!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_co[1]), getMainKeyboard())
+                                access_full_co[1] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ЗГСа ЦА", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "del full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing access health":
+                            if msg == "гса":
+                                sender(
+                                    "Вас сняли с должности ГСа МЗ!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_health[0]), getMainKeyboard())
+                                access_full_health[0] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ГСа МЗ", id, getKeyboardByStatus())
+                            elif msg == "згса":
+                                sender(
+                                    "Вас сняли с должности ЗГСа МЗ!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_health[1]), getMainKeyboard())
+                                access_full_health[1] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ЗГСа МЗ", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "del full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing access justice":
+                            if msg == "гса":
+                                sender(
+                                    "Вас сняли с должности ГСа МЮ!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_justice[0]), getMainKeyboard())
+                                access_full_justice[0] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ГСа МЮ", id, getKeyboardByStatus())
+                            elif msg == "згса":
+                                sender(
+                                    "Вас сняли с должности ЗГСа МЮ!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_justice[1]), getMainKeyboard())
+                                access_full_justice[1] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли МЮ", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "del full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing access defence":
+                            if msg == "гса":
+                                sender(
+                                    "Вас сняли с должности ГСа МО!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_defense[0]), getMainKeyboard())
+                                access_full_defense[0] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ГСа МО", id, getKeyboardByStatus())
+                            elif msg == "згса":
+                                sender(
+                                    "Вас сняли с должности ЗГСа МО!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_defense[1]), getMainKeyboard())
+                                access_full_defense[1] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли МО", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "del full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing access media":
+                            if msg == "гса":
+                                sender(
+                                    "Вас сняли с должности ГСа СМИ!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_media[0]), getMainKeyboard())
+                                access_full_media[0] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ГСа СМИ", id, getKeyboardByStatus())
+                            elif msg == "згса":
+                                sender(
+                                    "Вас сняли с должности ЗГСа СМИ!  Напишите \"Обновить\", чтоб бот продолжил работу",
+                                    int(access_full_media[1]), getMainKeyboard())
+                                access_full_media[1] = ""
+                                saveVariables()
+                                sender("Вы успешно сняли ЗГСа СМИ", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "del full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "set spectator":
+                            if msg == "пра-во":
+                                status = "waiting set spectator government"
+                                sender("Идем ставить следящего пра-во", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                            elif msg == "ца":
+                                status = "waiting set spectator co"
+                                sender("Идем ставить следящего ЦА", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                            elif msg == "мю":
+                                status = "waiting set spectator justice"
+                                sender("Идем ставить следящего МЮ", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                            elif msg == "мз":
+                                status = "waiting set spectator health"
+                                sender("Идем ставить следящего МЗ", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                            elif msg == "мо":
+                                status = "waiting set spectator defence"
+                                sender("Идем ставить следящего МО", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                            elif msg == "сми":
+                                status = "waiting set spectator media"
+                                sender("Идем ставить следящего СМИ", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "settings"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "waiting set spectator government":
+                            if checkValidId(msg):
+                                access_spec_government.append(msg)
+                                saveVariables()
+                                status = "set spectator"
+                                sender("Вы успешно поставили следящего за пра-во!", id, getKeyboardByStatus())
+                                sender("Вас поставили на слежку за пра-во! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                        elif status == "waiting set spectator co":
+                            if checkValidId(msg):
+                                access_spec_co.append(msg)
+                                saveVariables()
+                                status = "set spectator"
+                                sender("Вы успешно поставили следящего за ЦА!", id, getKeyboardByStatus())
+                                sender("Вас поставили на слежку за ЦА! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                        elif status == "waiting set spectator justice":
+                            if checkValidId(msg):
+                                access_spec_justice.append(msg)
+                                saveVariables()
+                                status = "set spectator"
+                                sender("Вы успешно поставили следящего за МЮ!", id, getKeyboardByStatus())
+                                sender("Вас поставили на слежку за МЮ! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                        elif status == "waiting set spectator health":
+                            if checkValidId(msg):
+                                access_spec_health.append(msg)
+                                saveVariables()
+                                status = "set spectator"
+                                sender("Вы успешно поставили следящего за МЗ!", id, getKeyboardByStatus())
+                                sender("Вас поставили на слежку за МЗ! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                        elif status == "waiting set spectator defence":
+                            if checkValidId(msg):
+                                access_spec_defense.append(msg)
+                                saveVariables()
+                                status = "set spectator"
+                                sender("Вы успешно поставили следящего за МО!", id, getKeyboardByStatus())
+                                sender("Вас поставили на слежку за МО! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                        elif status == "waiting set spectator media":
+                            if checkValidId(msg):
+                                access_spec_media.append(msg)
+                                saveVariables()
+                                status = "set spectator"
+                                sender("Вы успешно поставили следящего за СМИ!", id, getKeyboardByStatus())
+                                sender("Вас поставили на слежку за СМИ! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                        elif status == "del spectator":
+                            if msg == "пра-во":
+                                status = "waiting del spectator government"
+                                sender("Идем снимать следящего пра-во", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "ца":
+                                status = "waiting del spectator co"
+                                sender("Идем снимать следящего ЦА", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "мю":
+                                status = "waiting del spectator justice"
+                                sender("Идем снимать следящего МЮ", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "мз":
+                                status = "waiting del spectator health"
+                                sender("Идем снимать следящего МЗ", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "мо":
+                                status = "waiting del spectator defence"
+                                sender("Идем ставить следящего МО", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "сми":
+                                status = "waiting del spectator media"
+                                sender("Идем снимать следящего СМИ", id, getKeyboardByStatus())
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "settings"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "waiting del spectator government":
+                            if checkValidId(msg):
+                                access_spec_government.remove(msg)
+                                saveVariables()
+                                status = "del spectator"
+                                sender("Вы успешно сняли следящего пра-во!", id, getKeyboardByStatus())
+                                sender("Вас сняли со слежки пра-во! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "del spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status == "waiting del spectator co":
+                            if checkValidId(msg):
+                                access_spec_co.remove(msg)
+                                saveVariables()
+                                status = "del spectator"
+                                sender("Вы успешно сняли следящего ЦА!", id, getKeyboardByStatus())
+                                sender("Вас сняли со слежки ЦА! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "del spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status == "waiting del spectator justice":
+                            if checkValidId(msg):
+                                access_spec_justice.remove(msg)
+                                saveVariables()
+                                status = "del spectator"
+                                sender("Вы успешно сняли следящего МЮ!", id, getKeyboardByStatus())
+                                sender("Вас сняли со слежки МЮ! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "del spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status == "waiting del spectator health":
+                            if checkValidId(msg):
+                                access_spec_health.remove(msg)
+                                saveVariables()
+                                status = "del spectator"
+                                sender("Вы успешно сняли следящего МЗ!", id, getKeyboardByStatus())
+                                sender("Вас сняли со слежки МЗ! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "del spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status == "waiting del spectator defence":
+                            if checkValidId(msg):
+                                access_spec_defense.remove(msg)
+                                saveVariables()
+                                status = "del spectator"
+                                sender("Вы успешно сняли следящего МО!", id, getKeyboardByStatus())
+                                sender("Вас сняли со слежки МО! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "del spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status == "waiting del spectator media":
+                            if checkValidId(msg):
+                                access_spec_media.remove(msg)
+                                saveVariables()
+                                status = "del spectator"
+                                sender("Вы успешно сняли следящего СМИ!", id, getKeyboardByStatus())
+                                sender("Вас сняли со слежки СМИ! Напишите \"Обновить\", чтоб бот продолжил работу", msg, getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "del spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status == "set full spectator":
+                            if msg == "пра-во":
+                                status = "choosing set access government"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "ца":
+                                status = "choosing set access co"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "мю":
+                                status = "choosing set access justice"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "мз":
+                                status = "choosing set access health"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "мо":
+                                status = "choosing set access defence"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "сми":
+                                status = "choosing set access media"
+                                sender("Выберите: ГСа или ЗГСа", id, getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "settings"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing set access government":
+                            if msg == "гса":
+                                status = "set gs government"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "згса":
+                                status = "set zgs government"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing set access co":
+                            if msg == "гса":
+                                status = "set gs co"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "згса":
+                                status = "set zgs co"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing set access justice":
+                            if msg == "гса":
+                                status = "set gs justice"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "згса":
+                                status = "set zgs justice"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing set access health":
+                            if msg == "гса":
+                                status = "set gs health"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "згса":
+                                status = "set zgs health"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing set access defence":
+                            if msg == "гса":
+                                status = "set gs defence"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "згса":
+                                status = "set zgs defence"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status == "choosing set access media":
+                            if msg == "гса":
+                                status = "set gs media"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "згса":
+                                status = "set zgs media"
+                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                        elif status.startswith("set gs"):
+                            target = status.replace("set gs ", "")
+                            if checkValidId(msg):
+                                if target == "government":
+                                    access_full_government[0] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ГСа пра-во", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ГСа пра-во! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_government[0]), getMainKeyboard())
+                                elif target == "co":
+                                    access_full_co[0] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ГСа ЦА", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ГСа ЦА! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_co[0]), getMainKeyboard())
+                                elif target == "justice":
+                                    access_full_justice[0] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ГСа МЮ", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ГСа МЮ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_justice[0]), getMainKeyboard())
+                                elif target == "health":
+                                    access_full_health[0] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ГСа МЗ", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ГСа МЗ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_health[0]), getMainKeyboard())
+                                elif target == "defence":
+                                    access_full_defense[0] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ГСа МО", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ГСа МО! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_defense[0]), getMainKeyboard())
+                                elif target == "media":
+                                    access_full_media[0] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ГСа СМИ", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ГСа СМИ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_media[0]), getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+                        elif status.startswith("set zgs"):
+                            target = status.replace("set zgs ", "")
+                            if checkValidId(msg):
+                                if target == "government":
+                                    access_full_government[1] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ЗГСа пра-во", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ЗГСа пра-во! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_government[1]), getMainKeyboard())
+                                elif target == "co":
+                                    access_full_co[1] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ЗГСа ЦА", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ЗГСа ЦА! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_co[1]), getMainKeyboard())
+                                elif target == "justice":
+                                    access_full_justice[1] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ЗГСа МЮ", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ЗГСа МЮ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_justice[1]), getMainKeyboard())
+                                elif target == "health":
+                                    access_full_health[1] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ЗГСа МЗ", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ЗГСа МЗ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_health[1]), getMainKeyboard())
+                                elif target == "defence":
+                                    access_full_defense[1] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ЗГСа МО", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ЗГСа МО! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_defense[1]), getMainKeyboard())
+                                elif target == "media":
+                                    access_full_media[1] = msg
+                                    saveVariables()
+                                    status = "set full spectator"
+                                    sender("Вы успешно поставили ЗГСа СМИ", id, getKeyboardByStatus())
+                                    sender("Вас поставили на ЗГСа СМИ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_media[1]), getMainKeyboard())
+                            elif msg == "обратно":
+                                status = "set full spectator"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                       getKeyboardByStatus())
+
                     else:
                         send_noaccess_message(id, False)
 
