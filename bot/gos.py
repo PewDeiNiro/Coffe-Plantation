@@ -1,6 +1,7 @@
 import vk_api
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
+from datetime import datetime
 
 main_token = "e4128d88581696f9382e18f3d1852b9b463041116389f16f0b27d6c055d1dd923514e1eab8a1586369746"
 vk_session = vk_api.VkApi(token=main_token)
@@ -10,6 +11,7 @@ bot_id = 213622107
 longpoll = VkBotLongPoll(vk_session, bot_id)
 
 save_file = "C:\\Users\\pewde\\PycharmProjects\\Coffe-Plantation\\bot\\load.txt"
+log_file = "C:\\Users\\pewde\\PycharmProjects\\Coffe-Plantation\\bot\\log.txt"
 
 status = "main"
 
@@ -54,7 +56,7 @@ access_spec_government = ["665664706"]
 # Central Office
 
 access_full_co = ["342420933", "471076385"]
-access_spec_co = ["543775126", "547781950", "100437381"]
+access_spec_co = ["543775126", "489856771", "100437381"]
 
 # Department of Justice
 
@@ -83,6 +85,30 @@ def checkValidId(id):
         return True
     else:
         return False
+
+def log(text):
+    file = open(log_file, "a")
+    current_datetime = datetime.now()
+
+    day = str(current_datetime.day)
+    if len(day) < 2:
+        day = "0" + day
+    month = str(current_datetime.month)
+    if len(month) < 2:
+        month = "0" + month
+    hour = str(current_datetime.hour)
+    if len(hour) < 2:
+        hour = "0" + hour
+    minute = str(current_datetime.minute)
+    if len(minute) < 2:
+        minute = "0" + minute
+    second = str(current_datetime.second)
+    if len(second) < 2:
+        second = "0" + second
+
+    text = "[" + day + "." + month + "." + str(current_datetime.year) + " " + hour + ":" + minute + ":" + second + "] " + text + "\n"
+    file.write(text)
+    file.close()
 
 def clearVariables():
     access_full.clear()
@@ -163,42 +189,55 @@ def loadVariables():
     for line in file:
         if line.startswith("af "):
             line = line.replace("af ", "")
+            line = line.strip()
             access_full.append(line)
         if line.startswith("afg "):
             line = line.replace("afg ", "")
+            line = line.strip()
             access_full_government.append(line)
         if line.startswith("asg "):
             line = line.replace("asg ", "")
+            line = line.strip()
             access_spec_government.append(line)
         if line.startswith("afc "):
             line = line.replace("afc ", "")
+            line = line.strip()
             access_full_co.append(line)
         if line.startswith("asc "):
             line = line.replace("asc ", "")
+            line = line.strip()
             access_spec_co.append(line)
         if line.startswith("afj "):
             line = line.replace("afj ", "")
+            line = line.strip()
             access_full_justice.append(line)
         if line.startswith("asj "):
             line = line.replace("asj ", "")
+            line = line.strip()
             access_spec_justice.append(line)
         if line.startswith("afh "):
             line = line.replace("afh ", "")
+            line = line.strip()
             access_full_health.append(line)
         if line.startswith("ash "):
             line = line.replace("ash ", "")
+            line = line.strip()
             access_spec_health.append(line)
         if line.startswith("afd "):
             line = line.replace("afd ", "")
+            line = line.strip()
             access_full_defense.append(line)
         if line.startswith("asd "):
             line = line.replace("asd ", "")
+            line = line.strip()
             access_spec_defense.append(line)
         if line.startswith("afm "):
             line = line.replace("afm ", "")
+            line = line.strip()
             access_full_media.append(line)
         if line.startswith("asm "):
             line = line.replace("asm ", "")
+            line = line.strip()
             access_spec_media.append(line)
         if line.startswith("gsv "):
             line = line.replace("gsv ", "").replace("\n", "")
@@ -295,6 +334,7 @@ def loadVariables():
     file.close()
 
 loadVariables()
+
 
 
 
@@ -635,8 +675,10 @@ def makePunish(in_status, isPred, msg, id):
     target = getTarget(in_status)
     if isPred:
         chat_sender(target + ", +предупреждение за " + msg, 1)
+        log("@id" + str(id) + "(Администратор) выдал предупреждение " + target + " за " + msg)
     else:
         chat_sender(target + ", +выговор за " + msg, 1)
+        log("@id" + str(id) + "(Администратор) выдал выговор " + target + " за " + msg)
 
 
 
@@ -930,9 +972,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", 1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + gcl)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(gcl + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", 1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + gcl)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg gcl"
@@ -951,9 +995,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", 1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + stk)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(stk + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", 1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + stk)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg stk"
@@ -972,9 +1018,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", 1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + cb)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(cb + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", 1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + cb)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg cb"
@@ -993,9 +1041,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lspd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(lspd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lspd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg lspd"
@@ -1014,9 +1064,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfpd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(sfpd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + sfpd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg sfpd"
@@ -1035,9 +1087,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rcsd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(rcsd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rcsd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg rcsd"
@@ -1056,9 +1110,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(swat + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + swat)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(swat + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + swat)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg swat"
@@ -1077,9 +1133,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(fbi + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + fbi)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(fbi + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + fbi)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg fbi"
@@ -1098,9 +1156,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lsmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(lsmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lsmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg lsmc"
@@ -1119,9 +1179,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(sfmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + sfmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg sfmc"
@@ -1140,9 +1202,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lvmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(lvmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lvmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg lvmc"
@@ -1161,9 +1225,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lsa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(lsa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lsa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg lsa"
@@ -1182,9 +1248,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(sfa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + sfa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg sfa"
@@ -1203,9 +1271,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + msp)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(msp + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + msp)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg lsa"
@@ -1224,9 +1294,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rls)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(rls + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rls)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg rls"
@@ -1245,9 +1317,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rsf)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(rsf + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rsf)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg rsf"
@@ -1266,9 +1340,11 @@ while True:
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
                                 chat_sender(rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rlv)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
                                 chat_sender(rlv + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rlv)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
                                 status = "msg rlv"
@@ -1499,26 +1575,32 @@ while True:
                                 sender("Возращаемся назад!", id, getKeyboardByStatus())
                         elif status == "del settings government":
                             if msg == "гсв":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + gsv)
                                 gsv = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "гкв":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + gcv)
                                 gcv = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "ст":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + st)
                                 st = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "судья":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + judge)
                                 judge = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "губернатор":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + guber)
                                 guber = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "гп":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + gp)
                                 gp = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
@@ -1527,14 +1609,17 @@ while True:
                                 sender("Возращаемся назад!", id, getKeyboardByStatus())
                         elif status == "del settings co":
                             if msg == "гцл":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + gcl)
                                 gcl = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "стк":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + stk)
                                 stk = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "цб":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + cb)
                                 cb = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
@@ -1543,22 +1628,27 @@ while True:
                                 sender("Возращаемся назад!", id, getKeyboardByStatus())
                         elif status == "del settings justice":
                             if msg == "лспд":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + lspd)
                                 lspd = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "сфпд":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + sfpd)
                                 sfpd = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "ркшд":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + rcsd)
                                 rcsd = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "сват":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + swat)
                                 swat = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "фбр":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + fbi)
                                 fbi = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
@@ -1567,14 +1657,17 @@ while True:
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "del settings health":
                             if msg == "лсмц":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + lsmc)
                                 lsmc = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "сфмц":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + sfmc)
                                 sfmc = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "лвмц":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + lvmc)
                                 lvmc = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
@@ -1583,14 +1676,17 @@ while True:
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "del settings defence":
                             if msg == "лса":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + lsa)
                                 lsa = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "вмс":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + sfa)
                                 sfa = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "тср":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + msp)
                                 msp = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
@@ -1599,14 +1695,17 @@ while True:
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "del settings media":
                             if msg == "сми лс":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + rls)
                                 rls = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "сми сф":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + rsf)
                                 rsf = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
                             elif msg == "сми лв":
+                                log("@id" + str(id) + "(Администратор) снял с должности " + rlv)
                                 rlv = "Снят"
                                 sender("Лидер успешно снят!", id, getKeyboardByStatus())
                                 saveVariables()
@@ -1616,6 +1715,7 @@ while True:
                         elif status == "waiting gsv":
                             if "@" in msg:
                                 gsv = getFunctionalVkId(msg) + "(ГСВ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + gsv)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1627,6 +1727,7 @@ while True:
                         elif status == "waiting gcv":
                             if "@" in msg:
                                 gcv = getFunctionalVkId(msg) + "(ГКВ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + gcv)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1638,6 +1739,7 @@ while True:
                         elif status == "waiting st":
                             if "@" in msg:
                                 st = getFunctionalVkId(msg) + "(СТ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + st)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1649,6 +1751,7 @@ while True:
                         elif status == "waiting judge":
                             if "@" in msg:
                                 judge = getFunctionalVkId(msg) + "(Судья)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + judge)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1660,6 +1763,7 @@ while True:
                         elif status == "waiting guber":
                             if "@" in msg:
                                 guber = getFunctionalVkId(msg) + "(Губернатор)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + guber.replace("Губернатор", "Губернатора"))
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1671,6 +1775,7 @@ while True:
                         elif status == "waiting gp":
                             if "@" in msg:
                                 gp = getFunctionalVkId(msg) + "(ГП)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + gp)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1682,6 +1787,7 @@ while True:
                         elif status == "waiting gcl":
                             if "@" in msg:
                                 gcl = getFunctionalVkId(msg) + "(ГЦЛ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + gcl)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1693,6 +1799,7 @@ while True:
                         elif status == "waiting stk":
                             if "@" in msg:
                                 stk = getFunctionalVkId(msg) + "(СтК)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + stk)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1704,6 +1811,7 @@ while True:
                         elif status == "waiting cb":
                             if "@" in msg:
                                 cb = getFunctionalVkId(msg) + "(ЦБ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + cb)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1715,6 +1823,7 @@ while True:
                         elif status == "waiting lspd":
                             if "@" in msg:
                                 lspd = getFunctionalVkId(msg) + "(ЛСПД)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + lspd)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1726,6 +1835,7 @@ while True:
                         elif status == "waiting sfpd":
                             if "@" in msg:
                                 sfpd = getFunctionalVkId(msg) + "(СФПД)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + sfpd)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1737,6 +1847,7 @@ while True:
                         elif status == "waiting rcsd":
                             if "@" in msg:
                                 rcsd = getFunctionalVkId(msg) + "(РКШД)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + rcsd)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1748,6 +1859,7 @@ while True:
                         elif status == "waiting swat":
                             if "@" in msg:
                                 swat = getFunctionalVkId(msg) + "(СВАТ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + swat)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1759,6 +1871,7 @@ while True:
                         elif status == "waiting fbi":
                             if "@" in msg:
                                 fbi = getFunctionalVkId(msg) + "(ФБР)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + fbi)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1770,6 +1883,7 @@ while True:
                         elif status == "waiting lsmc":
                             if "@" in msg:
                                 lsmc = getFunctionalVkId(msg) + "(ЛСМЦ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + lsmc)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1781,6 +1895,7 @@ while True:
                         elif status == "waiting sfmc":
                             if "@" in msg:
                                 sfmc = getFunctionalVkId(msg) + "(СФМЦ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + sfmc)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1792,6 +1907,7 @@ while True:
                         elif status == "waiting lvmc":
                             if "@" in msg:
                                 lvmc = getFunctionalVkId(msg) + "(ЛВМЦ)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + lvmc)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1803,6 +1919,7 @@ while True:
                         elif status == "waiting lsa":
                             if "@" in msg:
                                 lsa = getFunctionalVkId(msg) + "(ЛСа)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + lsa)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1814,6 +1931,7 @@ while True:
                         elif status == "waiting sfa":
                             if "@" in msg:
                                 sfa = getFunctionalVkId(msg) + "(ВМС)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + sfa)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1825,6 +1943,7 @@ while True:
                         elif status == "waiting msp":
                             if "@" in msg:
                                 msp = getFunctionalVkId(msg) + "(ТСР)"
+                                log("@id" + str(id) + "(Администратор) поставил на должность " + msp)
                                 saveVariables()
                                 sender("Лидер успешно поставлен!", id, getKeyboardByStatus())
                             else:
@@ -1894,6 +2013,7 @@ while True:
                                 sender(
                                     "Вас сняли с должности ГСа Пра-во!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_government[0]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_government[0] + "(ГСа Пра-во)")
                                 access_full_government[0] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ГСа Пра-во", id, getKeyboardByStatus())
@@ -1901,6 +2021,7 @@ while True:
                                 sender(
                                     "Вас сняли с должности ЗГСа Пра-во!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_government[1]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_government[1] + "(ЗГСа Пра-во)")
                                 access_full_government[1] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ЗГСа Пра-во", id, getKeyboardByStatus())
@@ -1912,6 +2033,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ГСа ЦА!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_co[0]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_co[
+                                    0] + "(ГСа ЦА)")
                                 access_full_co[0] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ГСа ЦА", id, getKeyboardByStatus())
@@ -1919,6 +2042,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ЗГСа ЦА!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_co[1]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_co[
+                                    1] + "(ЗГСа ЦА)")
                                 access_full_co[1] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ЗГСа ЦА", id, getKeyboardByStatus())
@@ -1930,6 +2055,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ГСа МЗ!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_health[0]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_health[
+                                    0] + "(ГСа МЗ)")
                                 access_full_health[0] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ГСа МЗ", id, getKeyboardByStatus())
@@ -1937,6 +2064,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ЗГСа МЗ!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_health[1]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_health[
+                                    1] + "(ЗГСа МЗ)")
                                 access_full_health[1] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ЗГСа МЗ", id, getKeyboardByStatus())
@@ -1948,6 +2077,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ГСа МЮ!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_justice[0]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_justice[
+                                    0] + "(ГСа МЮ)")
                                 access_full_justice[0] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ГСа МЮ", id, getKeyboardByStatus())
@@ -1955,6 +2086,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ЗГСа МЮ!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_justice[1]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_justice[
+                                    1] + "(ЗГСа МЮ)")
                                 access_full_justice[1] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли МЮ", id, getKeyboardByStatus())
@@ -1966,6 +2099,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ГСа МО!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_defense[0]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_defense[
+                                    0] + "(ГСа МО)")
                                 access_full_defense[0] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ГСа МО", id, getKeyboardByStatus())
@@ -1973,6 +2108,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ЗГСа МО!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_defense[1]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_defense[
+                                    1] + "(ЗГСа МО)")
                                 access_full_defense[1] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли МО", id, getKeyboardByStatus())
@@ -1984,6 +2121,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ГСа СМИ!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_media[0]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_media[
+                                    0] + "(ГСа СМИ)")
                                 access_full_media[0] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ГСа СМИ", id, getKeyboardByStatus())
@@ -1991,6 +2130,8 @@ while True:
                                 sender(
                                     "Вас сняли с должности ЗГСа СМИ!  Напишите \"Обновить\", чтоб бот продолжил работу",
                                     int(access_full_media[1]), getMainKeyboard())
+                                log("@id" + str(id) + "(ГС/ЗГС ГОС) снял @id" + access_full_media[
+                                    1] + "(ЗГСа СМИ)")
                                 access_full_media[1] = ""
                                 saveVariables()
                                 sender("Вы успешно сняли ЗГСа СМИ", id, getKeyboardByStatus())
@@ -1999,35 +2140,54 @@ while True:
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "set spectator":
                             if msg == "пра-во":
-                                status = "waiting set spectator government"
-                                sender("Идем ставить следящего пра-во", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_government):
+                                    status = "waiting set spectator government"
+                                    sender("Идем ставить следящего пра-во", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "ца":
-                                status = "waiting set spectator co"
-                                sender("Идем ставить следящего ЦА", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_co):
+                                    status = "waiting set spectator co"
+                                    sender("Идем ставить следящего ЦА", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "мю":
-                                status = "waiting set spectator justice"
-                                sender("Идем ставить следящего МЮ", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_justice):
+                                    status = "waiting set spectator justice"
+                                    sender("Идем ставить следящего МЮ", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "мз":
-                                status = "waiting set spectator health"
-                                sender("Идем ставить следящего МЗ", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_health):
+                                    status = "waiting set spectator health"
+                                    sender("Идем ставить следящего МЗ", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "мо":
-                                status = "waiting set spectator defence"
-                                sender("Идем ставить следящего МО", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_defense):
+                                    status = "waiting set spectator defence"
+                                    sender("Идем ставить следящего МО", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "сми":
-                                status = "waiting set spectator media"
-                                sender("Идем ставить следящего СМИ", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_media):
+                                    status = "waiting set spectator media"
+                                    sender("Идем ставить следящего СМИ", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "обратно":
                                 status = "settings"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "waiting set spectator government":
                             if checkValidId(msg):
                                 access_spec_government.append(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС Пра-во) поставил @id" + str(msg) + "(Администратора) на слежку пра-во")
                                 saveVariables()
                                 status = "set spectator"
                                 sender("Вы успешно поставили следящего за пра-во!", id, getKeyboardByStatus())
@@ -2040,6 +2200,7 @@ while True:
                         elif status == "waiting set spectator co":
                             if checkValidId(msg):
                                 access_spec_co.append(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС ЦА) поставил @id" + str(msg) + "(Администратора) на слежку ЦА")
                                 saveVariables()
                                 status = "set spectator"
                                 sender("Вы успешно поставили следящего за ЦА!", id, getKeyboardByStatus())
@@ -2052,6 +2213,7 @@ while True:
                         elif status == "waiting set spectator justice":
                             if checkValidId(msg):
                                 access_spec_justice.append(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС МЮ) поставил @id" + str(msg) + "(Администратора) на слежку МЮ")
                                 saveVariables()
                                 status = "set spectator"
                                 sender("Вы успешно поставили следящего за МЮ!", id, getKeyboardByStatus())
@@ -2064,6 +2226,7 @@ while True:
                         elif status == "waiting set spectator health":
                             if checkValidId(msg):
                                 access_spec_health.append(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС МЗ) поставил @id" + str(msg) + "(Администратора) на слежку МЗ")
                                 saveVariables()
                                 status = "set spectator"
                                 sender("Вы успешно поставили следящего за МЗ!", id, getKeyboardByStatus())
@@ -2076,6 +2239,7 @@ while True:
                         elif status == "waiting set spectator defence":
                             if checkValidId(msg):
                                 access_spec_defense.append(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС МО) поставил @id" + str(msg) + "(Администратора) на слежку МО")
                                 saveVariables()
                                 status = "set spectator"
                                 sender("Вы успешно поставили следящего за МО!", id, getKeyboardByStatus())
@@ -2088,6 +2252,7 @@ while True:
                         elif status == "waiting set spectator media":
                             if checkValidId(msg):
                                 access_spec_media.append(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС СМИ) поставил @id" + str(msg) + "(Администратора) на слежку СМИ")
                                 saveVariables()
                                 status = "set spectator"
                                 sender("Вы успешно поставили следящего за СМИ!", id, getKeyboardByStatus())
@@ -2099,41 +2264,60 @@ while True:
                                 sender("Ошибка! Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id, getKeyboardByStatus())
                         elif status == "del spectator":
                             if msg == "пра-во":
-                                status = "waiting del spectator government"
-                                sender("Идем снимать следящего пра-во", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
-                                       getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_government):
+                                    status = "waiting del spectator government"
+                                    sender("Идем снимать следящего пра-во", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                           getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "ца":
-                                status = "waiting del spectator co"
-                                sender("Идем снимать следящего ЦА", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
-                                       getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_co):
+                                    status = "waiting del spectator co"
+                                    sender("Идем снимать следящего ЦА", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                           getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "мю":
-                                status = "waiting del spectator justice"
-                                sender("Идем снимать следящего МЮ", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
-                                       getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_justice):
+                                    status = "waiting del spectator justice"
+                                    sender("Идем снимать следящего МЮ", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                           getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "мз":
-                                status = "waiting del spectator health"
-                                sender("Идем снимать следящего МЗ", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
-                                       getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_health):
+                                    status = "waiting del spectator health"
+                                    sender("Идем снимать следящего МЗ", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                           getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "мо":
-                                status = "waiting del spectator defence"
-                                sender("Идем ставить следящего МО", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id,
-                                       getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_defense):
+                                    status = "waiting del spectator defence"
+                                    sender("Идем ставить следящего МО", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на нового следящего в формате id вк, например: 454427393", id,
+                                           getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "сми":
-                                status = "waiting del spectator media"
-                                sender("Идем снимать следящего СМИ", id, getKeyboardByStatus())
-                                sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
-                                       getKeyboardByStatus())
+                                if check_access(id, access_full) or check_access(id, access_full_media):
+                                    status = "waiting del spectator media"
+                                    sender("Идем снимать следящего СМИ", id, getKeyboardByStatus())
+                                    sender("Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
+                                           getKeyboardByStatus())
+                                else:
+                                    send_noaccess_message(id)
                             elif msg == "обратно":
                                 status = "settings"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                         elif status == "waiting del spectator government":
                             if checkValidId(msg):
-                                access_spec_government.remove(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС Пра-во) снял @id" + str(msg) + "(Администратора) со слежки пра-во")
+                                access_spec_government.remove(str(msg))
                                 saveVariables()
                                 status = "del spectator"
                                 sender("Вы успешно сняли следящего пра-во!", id, getKeyboardByStatus())
@@ -2146,7 +2330,8 @@ while True:
                                        getKeyboardByStatus())
                         elif status == "waiting del spectator co":
                             if checkValidId(msg):
-                                access_spec_co.remove(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС ЦА) снял @id" + str(msg) + "(Администратора) со слежки ЦА")
+                                access_spec_co.remove(str(msg))
                                 saveVariables()
                                 status = "del spectator"
                                 sender("Вы успешно сняли следящего ЦА!", id, getKeyboardByStatus())
@@ -2159,7 +2344,8 @@ while True:
                                        getKeyboardByStatus())
                         elif status == "waiting del spectator justice":
                             if checkValidId(msg):
-                                access_spec_justice.remove(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС МЮ) снял @id" + str(msg) + "(Администратора) со слежки МЮ")
+                                access_spec_justice.remove(str(msg))
                                 saveVariables()
                                 status = "del spectator"
                                 sender("Вы успешно сняли следящего МЮ!", id, getKeyboardByStatus())
@@ -2172,7 +2358,8 @@ while True:
                                        getKeyboardByStatus())
                         elif status == "waiting del spectator health":
                             if checkValidId(msg):
-                                access_spec_health.remove(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС МЗ) снял @id" + str(msg) + "(Администратора) со слежки МЗ")
+                                access_spec_health.remove(str(msg))
                                 saveVariables()
                                 status = "del spectator"
                                 sender("Вы успешно сняли следящего МЗ!", id, getKeyboardByStatus())
@@ -2185,7 +2372,8 @@ while True:
                                        getKeyboardByStatus())
                         elif status == "waiting del spectator defence":
                             if checkValidId(msg):
-                                access_spec_defense.remove(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС МО) снял @id" + str(msg) + "(Администратора) со слежки МО")
+                                access_spec_defense.remove(str(msg))
                                 saveVariables()
                                 status = "del spectator"
                                 sender("Вы успешно сняли следящего МО!", id, getKeyboardByStatus())
@@ -2198,7 +2386,8 @@ while True:
                                        getKeyboardByStatus())
                         elif status == "waiting del spectator media":
                             if checkValidId(msg):
-                                access_spec_media.remove(msg)
+                                log("@id" + str(id) + "(ГС/ЗГС СМИ) снял @id" + str(msg) + "(Администратора) со слежки СМИ")
+                                access_spec_media.remove(str(msg))
                                 saveVariables()
                                 status = "del spectator"
                                 sender("Вы успешно сняли следящего СМИ!", id, getKeyboardByStatus())
@@ -2310,34 +2499,40 @@ while True:
                                     access_full_government[0] = msg
                                     saveVariables()
                                     status = "set full spectator"
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ГСа Пра-во)")
                                     sender("Вы успешно поставили ГСа пра-во", id, getKeyboardByStatus())
                                     sender("Вас поставили на ГСа пра-во! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_government[0]), getMainKeyboard())
                                 elif target == "co":
                                     access_full_co[0] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ГСа ЦА)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ГСа ЦА", id, getKeyboardByStatus())
                                     sender("Вас поставили на ГСа ЦА! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_co[0]), getMainKeyboard())
                                 elif target == "justice":
                                     access_full_justice[0] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ГСа МЮ)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ГСа МЮ", id, getKeyboardByStatus())
                                     sender("Вас поставили на ГСа МЮ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_justice[0]), getMainKeyboard())
                                 elif target == "health":
                                     access_full_health[0] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ГСа МЗ)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ГСа МЗ", id, getKeyboardByStatus())
                                     sender("Вас поставили на ГСа МЗ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_health[0]), getMainKeyboard())
                                 elif target == "defence":
                                     access_full_defense[0] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ГСа МО)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ГСа МО", id, getKeyboardByStatus())
                                     sender("Вас поставили на ГСа МО! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_defense[0]), getMainKeyboard())
                                 elif target == "media":
                                     access_full_media[0] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ГСа СМИ)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ГСа СМИ", id, getKeyboardByStatus())
@@ -2353,36 +2548,42 @@ while True:
                             if checkValidId(msg):
                                 if target == "government":
                                     access_full_government[1] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ЗГСа Пра-во)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ЗГСа пра-во", id, getKeyboardByStatus())
                                     sender("Вас поставили на ЗГСа пра-во! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_government[1]), getMainKeyboard())
                                 elif target == "co":
                                     access_full_co[1] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ЗГСа ЦА)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ЗГСа ЦА", id, getKeyboardByStatus())
                                     sender("Вас поставили на ЗГСа ЦА! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_co[1]), getMainKeyboard())
                                 elif target == "justice":
                                     access_full_justice[1] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ЗГСа МЮ)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ЗГСа МЮ", id, getKeyboardByStatus())
                                     sender("Вас поставили на ЗГСа МЮ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_justice[1]), getMainKeyboard())
                                 elif target == "health":
                                     access_full_health[1] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ЗГСа СМИ)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ЗГСа МЗ", id, getKeyboardByStatus())
                                     sender("Вас поставили на ЗГСа МЗ! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_health[1]), getMainKeyboard())
                                 elif target == "defence":
                                     access_full_defense[1] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ЗГСа МО)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ЗГСа МО", id, getKeyboardByStatus())
                                     sender("Вас поставили на ЗГСа МО! Напишите \"Обновить\", чтоб бот продолжил работу", int(access_full_defense[1]), getMainKeyboard())
                                 elif target == "media":
                                     access_full_media[1] = msg
+                                    log("@id" + str(id) + "(ГС/ЗГС ГОС) поставил @id" + str(msg) + "(ЗГСа СМИ)")
                                     saveVariables()
                                     status = "set full spectator"
                                     sender("Вы успешно поставили ЗГСа СМИ", id, getKeyboardByStatus())
