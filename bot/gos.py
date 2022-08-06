@@ -2,6 +2,7 @@ import vk_api
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
 from datetime import datetime
+import checker
 
 main_token = "e4128d88581696f9382e18f3d1852b9b463041116389f16f0b27d6c055d1dd923514e1eab8a1586369746"
 vk_session = vk_api.VkApi(token=main_token)
@@ -665,7 +666,7 @@ def getKeyboardByStatus():
         return getGovernmentPredsKeyboard()
     elif status == "vig government":
         return getGovernmentVigsKeyboard()
-    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs"):
+    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs") or "msg" in status:
         return getPunishKeyboard()
     elif status == "set leader" or status == "del leader" or status == "set spectator" or status == "del spectator" or status == "set full spectator" or status == "del full spectator":
         return getSettingsLeaderKeyboard()
@@ -1278,7 +1279,7 @@ while True:
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + msp)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
-                                status = "msg lsa"
+                                status = "msg msp"
                                 sender("Какое сообщение вы хотите отправить?", id, getKeyboardByStatus())
                             elif msg == "обратно":
                                 status = "menu defense"
@@ -2594,6 +2595,81 @@ while True:
                             else:
                                 sender("Ошибка! Отправьте ссылку на следящего в формате id вк, например: 454427393", id,
                                        getKeyboardByStatus())
+                        elif "msg" in status:
+                            target = status.replace("msg ", "")
+                            if msg == "обратно":
+                                status = status.replace("msg", "menu")
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            else:
+                                if target == "gcl":
+                                    chat_sender(msg, 1)
+                                    status = "menu gcl"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "stk":
+                                    chat_sender(msg, 1)
+                                    status = "menu stk"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "cb":
+                                    chat_sender(msg, 1)
+                                    status = "menu cb"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "lspd":
+                                    chat_sender(msg, 1)
+                                    status = "menu lspd"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "sfpd":
+                                    chat_sender(msg, 1)
+                                    status = "menu sfpd"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "rcsd":
+                                    chat_sender(msg, 1)
+                                    status = "menu rcsd"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "swat":
+                                    chat_sender(msg, 1)
+                                    status = "menu swat"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "fbi":
+                                    chat_sender(msg, 1)
+                                    status = "menu fbi"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "lsmc":
+                                    chat_sender(msg, 1)
+                                    status = "menu lsmc"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "sfmc":
+                                    chat_sender(msg, 1)
+                                    status = "menu sfmc"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "lvmc":
+                                    chat_sender(msg, 1)
+                                    status = "menu lvmc"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "lsa":
+                                    chat_sender(msg, 1)
+                                    status = "menu lsa"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "sfa":
+                                    chat_sender(msg, 1)
+                                    status = "menu sfa"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "msp":
+                                    chat_sender(msg, 1)
+                                    status = "menu msp"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "rls":
+                                    chat_sender(msg, 1)
+                                    status = "menu rls"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "rsf":
+                                    chat_sender(msg, 1)
+                                    status = "menu rsf"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+                                elif target == "rlv":
+                                    chat_sender(msg, 1)
+                                    status = "menu rlv"
+                                    sender("Отправил!", id, getKeyboardByStatus())
+
 
                     else:
                         send_noaccess_message(id, False)
