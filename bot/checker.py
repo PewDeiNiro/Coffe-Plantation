@@ -12,6 +12,7 @@ def getMessageAboutOrg(orgId):
     table = soup.find("tbody")
     countOnline = 0
     isLeaderOnline = False
+    notSetted = True
     leader = ""
     deputy = []
     countOffline = 0
@@ -19,7 +20,9 @@ def getMessageAboutOrg(orgId):
         if "_" in str(tr.find_all("td")[1]) and not str(tr.find_all("td")[3]).replace("<td>", "").replace("</td>", "") == "Сейчас играет":
             countOffline += 1
         if "_" in str(tr.find_all("td")[1]) and str(tr.find_all("td")[3]).replace("<td>", "").replace("</td>","") == "Сейчас играет" and str(tr.find_all("td")[2]).replace("<td>", "").replace("</td>","") == "Лидер":
-            isLeaderOnline = True
+            if notSetted:
+                isLeaderOnline = True
+                notSetted = False
         if str(tr.find_all("td")[2]).replace("<td>", "").replace("</td>","") == "Лидер":
             if leader == "":
                 leader = str(tr.find_all("td")[1]).replace("<td>", "").replace("</td>","")
@@ -31,17 +34,17 @@ def getMessageAboutOrg(orgId):
             deputy.append([nick, isOnline])
         if "_" in str(tr.find_all("td")[1]) and str(tr.find_all("td")[3]).replace("<td>", "").replace("</td>", "") == "Сейчас играет":
             countOnline += 1
-    message = "Информация об организации " + "\"" + organizations[str(orgId)] + "\"\nОнлайн организации - " + str(countOnline) + "\nОффлайн организации - " + str(countOffline) + "\nЛидер организации:\n" + leader + " - "
+    if leader == "":
+        leader = "Отсутствует"
+    message = "🔎Информация об организации " + "\"" + organizations[str(orgId)] + "\"🔍\nОнлайн организации - " + str(countOnline) + "🌕\nОффлайн организации - " + str(countOffline) + "🌑\nЛидер организации:👑\n" + leader + " - "
     if isLeaderOnline:
-        message = message + "Онлайн\nЗаместители:\n"
+        message = message + "Онлайн🌕\n👷‍♂Заместители:👷‍♂\n"
     else:
-        message = message + "Оффлайн\nЗаместители:\n"
+        message = message + "Оффлайн🌑\n👷‍♂Заместители:👷‍♂\n"
     for deput in deputy:
         if deput[1]:
-            message = message + deput[0] + " - " + "Онлайн\n"
+            message = message + deput[0] + " - " + "Онлайн🌕\n"
         else:
-            message = message + deput[0] + " - " + "Оффлайн\n"
-    return message
-
-
-
+            message = message + deput[0] + " - " + "Оффлайн🌑\n"
+    info = [message, str(countOnline)]
+    return info

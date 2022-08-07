@@ -83,7 +83,20 @@ access_spec_media = ["482497386"]
 
 statuses = ["main", "menu government", "menu co", "menu juctice", "menu health", "menu defense", "menu media"]
 
+organizationsId = {"лспд" : 1, "ркшд" : 2, "фбр" : 3, "сфпд" : 4, "лсмц" : 5, "пра-во" : 6, "тср" : 7, "сфмц" : 8, "аш" : 9, "сми лс" : 10,
+                   "лса" : 20, "цб" : 21, "лвмц" : 22, "сват" : 23, "сми лв" : 24, "сми сф" : 26, "вмс" : 27, "стк" : 29
+                   }
 
+def isOrg(msg):
+    if organizationsId.get(msg) != None:
+        return True
+    else:
+        return False
+
+def getCutsNameOrg():
+    msg = "ЛСПД - лспд(1)\nРКШД - ркшд(2)\nФБР - фбр(3)\nСФПД - сфпд(4)\nЛСМЦ - лсмц(5)\nПравительство - пра-во(6)\nТСР - тср(7)\nСФМЦ - сфмц(8)\nГЦЛ - аш(9)\n"
+    msg = msg + "СМИ ЛС - сми лс(10)\nЛСа - лса(20)\nЦБ - цб(21)\nЛВМЦ - лвмц(22)\nСВАТ - сват(23)\nСМИ ЛВ - сми лв(24)\nСМИ СФ - сми сф(26)\nСФа - вмс(27)\nЦБ - цб(29)"
+    return msg
 
 def checkValidId(id):
     if id.isdigit() and len(id) == 9:
@@ -403,6 +416,12 @@ def getMainKeyboard():
     keyboard.add_button("Онлайн организаций", VkKeyboardColor.POSITIVE)
     return keyboard
 
+def getGosOnlineKeyboard():
+    keyboard = VkKeyboard()
+    keyboard.add_button("Сокращения организаций", VkKeyboardColor.PRIMARY)
+    keyboard.add_line()
+    keyboard.add_button("Обратно", VkKeyboardColor.PRIMARY)
+    return keyboard
 
 def getGovernmentKeyboard():
     keyboard = VkKeyboard()
@@ -637,6 +656,8 @@ def getChoosingAccessKeyboard():
 def getKeyboardByStatus():
     if status == "main":
         return getMainKeyboard()
+    elif status == "gos online":
+        return getGosOnlineKeyboard()
     elif status == "menu government":
         return getGovernmentKeyboard()
     elif status == "menu co":
@@ -671,7 +692,7 @@ def getKeyboardByStatus():
         return getGovernmentPredsKeyboard()
     elif status == "vig government":
         return getGovernmentVigsKeyboard()
-    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs") or "msg" in status or status == "gos online":
+    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs") or "msg" in status:
         return getPunishKeyboard()
     elif status == "set leader" or status == "del leader" or status == "set spectator" or status == "del spectator" or status == "set full spectator" or status == "del full spectator":
         return getSettingsLeaderKeyboard()
@@ -749,7 +770,7 @@ while True:
                     id = event.object.message["from_id"]
                     message = event.object.message["text"]
                     msg = message.lower()
-                    if msg == "обновить":
+                    if msg == "обновить" or msg == "обратно":
                         status = "main"
                         sender("Бот успешно обновил свою работу!", id, getKeyboardByStatus())
                     if check_access(id, accesses):
@@ -2681,9 +2702,14 @@ while True:
                             if msg == "обратно":
                                 status = "main"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            elif msg == "сокращения организаций":
+                                sender(getCutsNameOrg(), id, getKeyboardByStatus())
                             elif msg.isdigit() and int(msg) >= 1 and int(msg) <= 29:
-                                sender(checker.getMessageAboutOrg(int(msg)), id, getKeyboardByStatus())
-
+                                sender(checker.getMessageAboutOrg(int(msg)[0]), id, getKeyboardByStatus())
+                            elif isOrg(msg):
+                                sender(checker.getMessageAboutOrg(organizationsId.get(msg)[0]), id, getKeyboardByStatus())
+                            else:
+                                sender("Введите валидное значение!", id, getKeyboardByStatus())
 
                     else:
                         send_noaccess_message(id, False)
