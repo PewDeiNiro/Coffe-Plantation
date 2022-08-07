@@ -2,7 +2,6 @@ from PyQt5.QtWebEngineWidgets import QWebEnginePage
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QUrl
 import sys
-
 class Page(QWebEnginePage):
     def __init__(self, url):
         self.app = QApplication(sys.argv)
@@ -13,7 +12,7 @@ class Page(QWebEnginePage):
         self.app.exec_()
 
     def _on_load_finished(self):
-        self.html = self.toHtml(self.Callable)
+        self.toHtml(self.Callable)
         print('Load finished')
 
     def Callable(self, html_str):

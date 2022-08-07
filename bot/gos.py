@@ -9,6 +9,8 @@ vk_session = vk_api.VkApi(token=main_token)
 
 bot_id = 213622107
 
+
+
 longpoll = VkBotLongPoll(vk_session, bot_id)
 
 save_file = "C:\\Users\\pewde\\PycharmProjects\\Coffe-Plantation\\bot\\load.txt"
@@ -80,6 +82,8 @@ access_full_media = ["454108081", "572994700"]
 access_spec_media = ["482497386"]
 
 statuses = ["main", "menu government", "menu co", "menu juctice", "menu health", "menu defense", "menu media"]
+
+
 
 def checkValidId(id):
     if id.isdigit() and len(id) == 9:
@@ -396,6 +400,7 @@ def getMainKeyboard():
     keyboard.add_button("Меню СМИ", VkKeyboardColor.PRIMARY)
     keyboard.add_line()
     keyboard.add_button("Меню настройки", VkKeyboardColor.PRIMARY)
+    keyboard.add_button("Онлайн организаций", VkKeyboardColor.POSITIVE)
     return keyboard
 
 
@@ -666,7 +671,7 @@ def getKeyboardByStatus():
         return getGovernmentPredsKeyboard()
     elif status == "vig government":
         return getGovernmentVigsKeyboard()
-    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs") or "msg" in status:
+    elif status.startswith("pred") or status.startswith("vig") or status.startswith("waiting") or status.startswith("set gs") or status.startswith("set zgs") or "msg" in status or status == "gos online":
         return getPunishKeyboard()
     elif status == "set leader" or status == "del leader" or status == "set spectator" or status == "del spectator" or status == "set full spectator" or status == "del full spectator":
         return getSettingsLeaderKeyboard()
@@ -805,6 +810,9 @@ while True:
                                     sender("Перехожу в меню настроек", id, getKeyboardByStatus())
                                 else:
                                     sender("У вас недостаточно прав! Чтобы получить доступ отпишите @zhenya_bruna(Жене Ветрову)", id, getKeyboardByStatus())
+                            elif msg == "онлайн организаций":
+                                status = "gos online"
+                                sender("Введите id или название организации, например:\nавтошкола - аш\nрадио лс - сми лс\nправительство - пра-во", id, getKeyboardByStatus())
                         elif status == "menu government":
                             if msg == "обратно":
                                 status = "main"
@@ -2669,6 +2677,12 @@ while True:
                                     chat_sender(msg, 1)
                                     status = "menu rlv"
                                     sender("Отправил!", id, getKeyboardByStatus())
+                        elif status == "gos online":
+                            if msg == "обратно":
+                                status = "main"
+                                sender("Возращаемся обратно!", id, getKeyboardByStatus())
+                            elif msg.isdigit() and int(msg) >= 1 and int(msg) <= 29:
+                                sender(checker.getMessageAboutOrg(int(msg)), id, getKeyboardByStatus())
 
 
                     else:
