@@ -1,8 +1,13 @@
+import sys
+
 import vk_api
+from PyQt5.QtWidgets import QApplication
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 from vk_api.bot_longpoll import VkBotEventType, VkBotLongPoll
 from datetime import datetime
 import checker
+import threading
+from page import Page
 
 main_token = "e4128d88581696f9382e18f3d1852b9b463041116389f16f0b27d6c055d1dd923514e1eab8a1586369746"
 vk_session = vk_api.VkApi(token=main_token)
@@ -13,8 +18,8 @@ bot_id = 213622107
 
 longpoll = VkBotLongPoll(vk_session, bot_id)
 
-save_file = "C:\\Users\\pewde\\PycharmProjects\\Coffe-Plantation\\bot\\load.txt"
-log_file = "C:\\Users\\pewde\\PycharmProjects\\Coffe-Plantation\\bot\\log.txt"
+save_file = "D:\\PycharmProjects\\\Coffe-Plantation\\bot\\load.txt"
+log_file = "D:\\PycharmProjects\\Coffe-Plantation\\bot\\log.txt"
 
 status = "main"
 
@@ -43,6 +48,8 @@ rsf = "@zhenya_bruna(СМИ СФ)"
 rlv = "@zhenya_bruna(СМИ ЛВ)"
 
 
+started_conferention = []
+
 # Developer
 
 access_dev = ["342420933"]
@@ -53,39 +60,186 @@ access_full = ["475362255", "342420933"]
 
 # Government
 
-access_full_government = ["608273181", "450908343"]
-access_spec_government = ["665664706"]
+access_full_government = []
+access_spec_government = []
 
 # Central Office
 
-access_full_co = ["342420933", "471076385"]
-access_spec_co = ["543775126", "489856771", "100437381"]
+access_full_co = []
+access_spec_co = []
 
 # Department of Justice
 
-access_full_justice = ["360669127", "481698071"]
-access_spec_justice = ["454427393", "435861554", "561978801", "30732603"]
+access_full_justice = []
+access_spec_justice = []
 
 # Department of Health
 
-access_full_health = ["676100115", ""]
-access_spec_health = ["466657339", "450908343", "482497386"]
+access_full_health = []
+access_spec_health = []
 
 # Departament of Defense
 
-access_full_defense = ["341995691", ""]
-access_spec_defense = ["709048695", "522188393"]
+access_full_defense = []
+access_spec_defense = []
+
+leaders_conferention = 1
+deputy_conferention = 1
+government_conferention = 1
+co_conferention = 1
+justice_conferention = 1
+health_conferention = 1
+defence_conferention = 1
+media_conferention = 1
+gcl_conferention = 1
+stk_conferention = 1
+cb_conferention = 1
+lspd_conferention = 1
+sfpd_conferention = 1
+rcsd_confrention = 1
+swat_conferention = 1
+fbi_conferention = 1
+lsmc_conferention = 1
+sfmc_conferention = 1
+lvmc_conferention = 1
+lsa_conferention = 1
+sfa_conferention = 1
+msp_conferention = 1
+rls_conferention = 1
+rsf_conferention = 1
+rlv_conferention = 1
+
 
 # Mass Media
 
-access_full_media = ["454108081", "572994700"]
-access_spec_media = ["482497386"]
+access_full_media = ["342420933"]
+access_spec_media = []
 
 statuses = ["main", "menu government", "menu co", "menu juctice", "menu health", "menu defense", "menu media"]
 
 organizationsId = {"лспд" : 1, "ркшд" : 2, "фбр" : 3, "сфпд" : 4, "лсмц" : 5, "пра-во" : 6, "тср" : 7, "сфмц" : 8, "аш" : 9, "сми лс" : 10,
                    "лса" : 20, "цб" : 21, "лвмц" : 22, "сват" : 23, "сми лв" : 24, "сми сф" : 26, "вмс" : 27, "стк" : 29
                    }
+
+
+
+def sender(text, id, keyboard=None):
+    if keyboard != None:
+        vk_session.method("messages.send",
+                          {"user_id": id, "message": text, "random_id": 0, "keyboard": keyboard.get_keyboard()})
+    else:
+        vk_session.method("messages.send", {"user_id": id, "message": text, "random_id": 0})
+def checkNorm():
+    online_lspd = checker.getMessageAboutOrg(1)[1]
+    online_rcsd = checker.getMessageAboutOrg(2)[1]
+    online_sfpd = checker.getMessageAboutOrg(4)[1]
+    online_lsmc = checker.getMessageAboutOrg(5)[1]
+    online_msp = checker.getMessageAboutOrg(7)[1]
+    online_sfmc = checker.getMessageAboutOrg(8)[1]
+    online_gcl = checker.getMessageAboutOrg(9)[1]
+    online_rls = checker.getMessageAboutOrg(10)[1]
+    online_lsa = checker.getMessageAboutOrg(20)[1]
+    online_cb = checker.getMessageAboutOrg(21)[1]
+    online_lvmc = checker.getMessageAboutOrg(22)[1]
+    online_rlv = checker.getMessageAboutOrg(24)[1]
+    online_rsf = checker.getMessageAboutOrg(26)[1]
+    online_sfa = checker.getMessageAboutOrg(27)[1]
+    online_stk = checker.getMessageAboutOrg(29)[1]
+
+    justice_text = ""
+    justice_keyboard = VkKeyboard()
+    ca_text = ""
+    ca_keyboard = VkKeyboard()
+    health_text = ""
+    health_keyboard = VkKeyboard()
+    defence_text = ""
+    defence_keyboard = VkKeyboard()
+    media_text = ""
+    media_keyboard = VkKeyboard()
+
+    if int(online_lspd) < 10:
+        justice_text += "Онлайн ЛСПД - " + online_lspd + ", норма онлайна - 10😡\n"
+        justice_keyboard.add_button("Выдать норму ЛСПД", VkKeyboardColor.NEGATIVE)
+        justice_keyboard.add_line()
+    if int(online_rcsd) < 10:
+        justice_text += "Онлайн РКШД - " + online_rcsd + ", норма онлайна - 10😡\n"
+        justice_keyboard.add_button("Выдать норму РКШД", VkKeyboardColor.NEGATIVE)
+        justice_keyboard.add_line()
+    if int(online_sfpd) < 10:
+        justice_text += "Онлайн СФПД - " + online_sfpd + ", норма онлайна - 10😡\n"
+        justice_keyboard.add_button("Выдать норму СФПД", VkKeyboardColor.NEGATIVE)
+        justice_keyboard.add_line()
+    if int(online_lsmc) < 12:
+        health_text += "Онлайн ЛСМЦ - " + online_lsmc + ", норма онлайна - 12😡\n"
+        health_keyboard.add_button("Выдать норму ЛСМЦ", VkKeyboardColor.NEGATIVE)
+        health_keyboard.add_line()
+    if int(online_msp) < 10:
+        defence_text += "Онлайн ТСР - " + online_msp + ", норма онлайна - 10😡\n"
+        defence_keyboard.add_button("Выдать норму ТСР", VkKeyboardColor.NEGATIVE)
+        defence_keyboard.add_line()
+    if int(online_sfmc) < 6:
+        health_text += "Онлайн СФМЦ - " + online_sfmc + ", норма онлайна - 6😡\n"
+        health_keyboard.add_button("Выдать норму СФМЦ", VkKeyboardColor.NEGATIVE)
+        health_keyboard.add_line()
+    if int(online_gcl) < 8:
+        ca_text += "Онлайн ГЦЛ - " + online_gcl + ", норма онлайна - 8😡\n"
+        ca_keyboard.add_button("Выдать норму ГЦЛ", VkKeyboardColor.NEGATIVE)
+        ca_keyboard.add_line()
+    if int(online_rls) < 11:
+        media_text += "Онлайн СМИ ЛС - " + online_rls + ", норма онлайна - 11😡\n"
+        media_keyboard.add_button("Выдать норму СМИ ЛС", VkKeyboardColor.NEGATIVE)
+        media_keyboard.add_line()
+    if int(online_lsa) < 12:
+        defence_text += "Онлайн ЛСа - " + online_lsa + ", норма онлайна - 12😡\n"
+        defence_keyboard.add_button("Выдать норму ЛСа", VkKeyboardColor.NEGATIVE)
+        defence_keyboard.add_line()
+    if int(online_cb) < 8:
+        ca_text += "Онлайн ЦБ - " + online_cb + ", норма онлайна - 8😡\n"
+        ca_keyboard.add_button("Выдать норму ЦБ", VkKeyboardColor.NEGATIVE)
+        ca_keyboard.add_line()
+    if int(online_lvmc) < 6:
+        health_text += "Онлайн ЛВМЦ - " + online_lvmc + ", норма онлайна - 6😡\n"
+        health_keyboard.add_button("Выдать норму ЛВМЦ", VkKeyboardColor.NEGATIVE)
+        health_keyboard.add_line()
+    if int(online_rlv) < 6:
+        media_text += "Онлайн СМИ ЛВ - " + online_rlv + ", норма онлайна - 6😡\n"
+        media_keyboard.add_button("Выдать норму СМИ ЛВ", VkKeyboardColor.NEGATIVE)
+        media_keyboard.add_line()
+    if int(online_rsf) < 8:
+        media_text += "Онлайн СМИ СФ - " + online_rsf + ", норма онлайна - 8😡\n"
+        media_keyboard.add_button("Выдать норму СМИ СФ", VkKeyboardColor.NEGATIVE)
+        media_keyboard.add_line()
+    if int(online_sfa) < 12:
+        defence_text += "Онлайн ВМС - " + online_sfa + ", норма онлайна - 12😡\n"
+        defence_keyboard.add_button("Выдать норму ВМС", VkKeyboardColor.NEGATIVE)
+        defence_keyboard.add_line()
+    if int(online_stk) < 8:
+        ca_text += "Онлайн СтК - " + online_stk + ", норма онлайна - 8😡\n"
+        ca_keyboard.add_button("Выдать норму СтК", VkKeyboardColor.NEGATIVE)
+        ca_keyboard.add_line()
+
+    justice_text += "Чтобы вернуться назад напишите \"Обратно\""
+    ca_text += "Чтобы вернуться назад напишите \"Обратно\""
+    health_text += "Чтобы вернуться назад напишите \"Обратно\""
+    defence_text += "Чтобы вернуться назад напишите \"Обратно\""
+    media_text += "Чтобы вернуться назад напишите \"Обратно\""
+
+    justice_keyboard.add_button("Обратно", VkKeyboardColor.POSITIVE)
+    ca_keyboard.add_button("Обратно", VkKeyboardColor.POSITIVE)
+    health_keyboard.add_button("Обратно", VkKeyboardColor.POSITIVE)
+    defence_keyboard.add_button("Обратно", VkKeyboardColor.POSITIVE)
+    media_keyboard.add_button("Обратно", VkKeyboardColor.POSITIVE)
+
+    sendAll(justice_text, justice_keyboard, access_full_justice)
+    sendAll(ca_text, ca_keyboard, access_full_co)
+    sendAll(health_text, health_keyboard, access_full_health)
+    sendAll(defence_text, defence_keyboard, access_full_defense)
+    sendAll(media_text, media_keyboard, access_full_media)
+
+
+def sendAll(text, keyboard, access):
+    for user in access:
+        sender(text, user, keyboard)
 
 def isOrg(msg):
     if organizationsId.get(msg) != None:
@@ -353,9 +507,6 @@ def loadVariables():
 
 loadVariables()
 
-
-
-
 accesses = access_full + access_full_government + access_spec_government + access_full_co + access_spec_co + access_full_justice + access_spec_justice + access_full_health + access_spec_health + access_full_defense + access_spec_defense + access_full_media + access_spec_media
 accesses_full = access_full + access_full_government + access_full_co + access_full_justice + access_full_health + access_full_defense + access_full_media
 
@@ -377,12 +528,7 @@ def check_access(user_id, list):
     return False
 
 
-def sender(text, id, keyboard=None):
-    if keyboard != None:
-        vk_session.method("messages.send",
-                          {"user_id": id, "message": text, "random_id": 0, "keyboard": keyboard.get_keyboard()})
-    else:
-        vk_session.method("messages.send", {"user_id": id, "message": text, "random_id": 0})
+
 
 
 def send_noaccess_message(id, isAuth=True):
@@ -701,14 +847,43 @@ def getKeyboardByStatus():
 def makePunish(in_status, isPred, msg, id):
     target = getTarget(in_status)
     if isPred:
-        chat_sender(target + ", +предупреждение за " + msg, 1)
+        chat_sender(target + ", +предупреждение за " + msg, leaders_conferention)
+        chat_sender(target + ", +предупреждение за " + msg, deputy_conferention)
+        if "gcl" in in_status or "stk" in in_status or "cb" in in_status:
+            chat_sender(target + ", +предупреждение за " + msg, co_conferention)
+        elif "lspd" in in_status or "sfpd" in in_status or "rcsd" in in_status or "swat" in in_status or "fbi" in in_status:
+            chat_sender(target + ", +предупреждение за " + msg, justice_conferention)
+        elif "lsmc" in in_status or "sfmc" in in_status or "lvmc" in in_status:
+            chat_sender(target + ", +предупреждение за " + msg, health_conferention)
+        elif "lsa" in in_status or "sfa" in in_status or "msp" in in_status:
+            chat_sender(target + ", +предупреждение за " + msg, defence_conferention)
+        elif "rls" in in_status or "rsf" in in_status or "rlv" in in_status:
+            chat_sender(target + ", +предупреждение за " + msg, media_conferention)
+        else:
+            chat_sender(target + ", +предупреждение за " + msg, government_conferention)
         log("@id" + str(id) + "(Администратор) выдал предупреждение " + target + " за " + msg)
     else:
-        chat_sender(target + ", +выговор за " + msg, 1)
+        chat_sender(target + ", +выговор за " + msg, leaders_conferention)
+        chat_sender(target + ", +выговор за " + msg, deputy_conferention)
+        if "gcl" in in_status or "stk" in in_status or "cb" in in_status:
+            chat_sender(target + ", +выговор за " + msg, co_conferention)
+        elif "lspd" in in_status or "sfpd" in in_status or "rcsd" in in_status or "swat" in in_status or "fbi" in in_status:
+            chat_sender(target + ", +выговор за " + msg, justice_conferention)
+        elif "lsmc" in in_status or "sfmc" in in_status or "lvmc" in in_status:
+            chat_sender(target + ", +выговор за " + msg, health_conferention)
+        elif "lsa" in in_status or "sfa" in in_status or "msp" in in_status:
+            chat_sender(target + ", +выговор за " + msg, defence_conferention)
+        elif "rls" in in_status or "rsf" in in_status or "rlv" in in_status:
+            chat_sender(target + ", +выговор за " + msg, media_conferention)
+        else:
+            chat_sender(target + ", +выговор за " + msg, government_conferention)
         log("@id" + str(id) + "(Администратор) выдал выговор " + target + " за " + msg)
 
 
-
+def sendToAnother(org, access, id):
+    for user in access:
+        if not user == str(id):
+            sender("Ваш коллега выдал норму онлайна для " + org + " выдайте другую норму или нажмите \"Обновить\"!", user)
 def getTarget(status):
     target = ""
     if "gcv" in status:
@@ -759,6 +934,31 @@ def getTarget(status):
         target = rlv
     return target
 
+u_id = 0
+checkedToday = False
+def checkTime():
+    global checkedToday
+    while True:
+        if not checkedToday:
+            time = datetime.now()
+            hour = time.hour
+            minute = time.minute
+            if str(hour) == "13" and str(minute) == "30":
+                checkedToday = True
+                keyboard = VkKeyboard()
+                keyboard.add_button("К формам", VkKeyboardColor.POSITIVE)
+                keyboard.add_line()
+                keyboard.add_button("Обратно", VkKeyboardColor.NEGATIVE)
+                global u_id
+                if not u_id == 0:
+                    sender("Вот и настало время проверять онлайн фракций\nНапишите \"К формам\", чтобы начать принимать формы\nНапишите \"Обратно\", чтоб не выдавать норму", u_id, keyboard)
+        else:
+            hour = datetime.now().hour
+            minute = datetime.now().minute
+            if not (str(hour) == "13" and str(minute) == "30"):
+                checkedToday = False
+thread = threading.Thread(target=checkTime)
+thread.start()
 while True:
     try:
         for event in longpoll.listen():
@@ -766,13 +966,239 @@ while True:
                 if event.from_chat:
                     id = event.chat_id
                     msg = event.object.message["text"]
+                    if msg == "getid":
+                        chat_sender(str(id), id)
+                    if msg == "начать" and not id in started_conferention:
+                        started_conferention.append(id)
+                        chat_sender("Бот успешно начал свою работу! В данной беседе теперь могут писать только люди, у которых есть админ-права", id)
                 else:
                     id = event.object.message["from_id"]
+                    u_id = id
                     message = event.object.message["text"]
                     msg = message.lower()
+
                     if msg == "обновить" or msg == "обратно":
                         status = "main"
                         sender("Бот успешно обновил свою работу!", id, getKeyboardByStatus())
+
+                    if check_access(id, accesses) and msg == "к формам":
+                        checkNorm()
+
+                    if check_access(id, access_full_co):
+                        if msg == "выдать норму гцл":
+                            chat_sender(
+                                gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                co_conferention)
+                            chat_sender(
+                                gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", gcl_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + gcl)
+                            sendToAnother(gcl, access_full_co, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму стк":
+                            chat_sender(
+                                stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                co_conferention)
+                            chat_sender(
+                                stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", stk_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + stk)
+                            sendToAnother(stk, access_full_co, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму цб":
+                            chat_sender(
+                                cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                co_conferention)
+                            chat_sender(
+                                cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", cb_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + cb)
+                            sendToAnother(cb, access_full_co, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                    if check_access(id, access_full_justice):
+                        if msg == "выдать норму лспд":
+                            chat_sender(
+                                lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                justice_conferention)
+                            chat_sender(
+                                lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", lspd_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lspd)
+                            sendToAnother(lspd, access_full_justice, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму сфпд":
+                            chat_sender(
+                                sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                justice_conferention)
+                            chat_sender(
+                                sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", sfpd_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfpd)
+                            sendToAnother(sfpd, access_full_justice, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму ркшд":
+                            chat_sender(
+                                rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                justice_conferention)
+                            chat_sender(
+                                rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", rcsd_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rcsd)
+                            sendToAnother(rcsd, access_full_justice, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                    if check_access(id, access_full_health):
+                        if msg == "выдать норму лсмц":
+                            chat_sender(
+                                lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                health_conferention)
+                            chat_sender(
+                                lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", lsmc_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lsmc)
+                            sendToAnother(lsmc, access_full_health, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму сфмц":
+                            chat_sender(
+                                sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                health_conferention)
+                            chat_sender(
+                                sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", sfmc_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfmc)
+                            sendToAnother(sfmc, access_full_health, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму лвмц":
+                            chat_sender(
+                                lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                health_conferention)
+                            chat_sender(
+                                lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", lvmc_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lvmc)
+                            sendToAnother(lvmc, access_full_health, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                    if check_access(id, access_full_defense):
+                        if msg == "выдать норму лса":
+                            chat_sender(
+                                lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                defence_conferention)
+                            chat_sender(
+                                lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", lsa_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lsa)
+                            sendToAnother(lsa, access_full_defense, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму вмс":
+                            chat_sender(
+                                sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                defence_conferention)
+                            chat_sender(
+                                sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", sfa_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfa)
+                            sendToAnother(sfa, access_full_defense, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму тср":
+                            chat_sender(
+                                msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                defence_conferention)
+                            chat_sender(
+                                msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", msp_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + msp)
+                            sendToAnother(msp, access_full_defense, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                    if check_access(id, access_full_media):
+                        if msg == "выдать норму сми лс":
+                            chat_sender(
+                                rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                media_conferention)
+                            chat_sender(
+                                rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", rls_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rls)
+                            sendToAnother(rls, access_full_media, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму сми сф":
+                            chat_sender(
+                                rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                media_conferention)
+                            chat_sender(
+                                rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", rsf_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rsf)
+                            sendToAnother(rsf, access_full_media, id)
+                            sender("Выдал, двигаемся дальше?", id)
+                        elif msg == "выдать норму сми лв":
+                            chat_sender(
+                                rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                media_conferention)
+                            chat_sender(
+                                rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                leaders_conferention)
+                            chat_sender(
+                                rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                deputy_conferention)
+                            chat_sender("@all, В ИГРУ!", rlv_conferention)
+                            log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rlv)
+                            sendToAnother(rlv, access_full_media, id)
+                            sender("Выдал, двигаемся дальше?", id)
                     if check_access(id, accesses):
                         if msg == "откат":
                             status = "main"
@@ -839,7 +1265,7 @@ while True:
                                 status = "main"
                                 sender("Возращаемся назад!", id, getKeyboardByStatus())
                             elif msg == "позвать всех в игру!":
-                                chat_sender("@all, В ИГРУ!", 1)
+                                chat_sender("@all, В ИГРУ!", government_conferention)
                                 sender("Позвал", id, getKeyboardByStatus())
                             elif msg == "меню предов":
                                 status = "pred government"
@@ -861,7 +1287,7 @@ while True:
                                 status = "main"
                                 sender("Возращаемся назад!", id, getKeyboardByStatus())
                             elif msg == "позвать всех в игру!":
-                                chat_sender("@all, В ИГРУ!", 1)
+                                chat_sender("@all, В ИГРУ!", co_conferention)
                                 sender("Позвал", id, getKeyboardByStatus())
                         elif status == "menu justice":
                             if msg == "меню лспд":
@@ -883,7 +1309,7 @@ while True:
                                 status = "main"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                             elif msg == "позвать всех в игру!":
-                                chat_sender("@all, В ИГРУ!", 1)
+                                chat_sender("@all, В ИГРУ!", justice_conferention)
                                 sender("Позвал", id, getKeyboardByStatus())
                         elif status == "menu health":
                             if msg == "меню лсмц":
@@ -899,7 +1325,7 @@ while True:
                                 status = "main"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                             elif msg == "позвать всех в игру!":
-                                chat_sender("@all, В ИГРУ!", 1)
+                                chat_sender("@all, В ИГРУ!", health_conferention)
                                 sender("Позвал", id, getKeyboardByStatus())
                         elif status == "menu defense":
                             if msg == "меню лса":
@@ -915,7 +1341,7 @@ while True:
                                 status = "main"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                             elif msg == "позвать всех в игру!":
-                                chat_sender("@all, В ИГРУ!", 1)
+                                chat_sender("@all, В ИГРУ!", defence_conferention)
                                 sender("Позвал", id, getKeyboardByStatus())
                         elif status == "menu media":
                             if msg == "меню сми лс":
@@ -931,7 +1357,7 @@ while True:
                                 status = "main"
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                             elif msg == "позвать всех в игру!":
-                                chat_sender("@all, В ИГРУ!", 1)
+                                chat_sender("@all, В ИГРУ!", media_conferention)
                                 sender("Позвал", id, getKeyboardByStatus())
                         elif status == "pred government":
                             if msg == "пред гсв":
@@ -1001,11 +1427,17 @@ while True:
                                 sender("Идем давать выговор ГЦЛ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", 1)
+                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", co_conferention)
+                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", leaders_conferention)
+                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", gcl_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + gcl)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", 1)
+                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", co_conferention)
+                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", leaders_conferention)
+                                chat_sender(gcl + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", conferention_conferention)
+                                chat_sender("@all, В ДИСКОРД!", gcl_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + gcl)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1024,11 +1456,25 @@ while True:
                                 sender("Идем давать выговор СтК", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", 1)
+                                chat_sender(stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", co_conferention)
+                                chat_sender(
+                                    stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    stk + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", stk_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + stk)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(stk + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", 1)
+                                chat_sender(stk + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", co_conferention)
+                                chat_sender(
+                                    stk + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    stk + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", stk_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + stk)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1047,11 +1493,25 @@ while True:
                                 sender("Идем давать выговор ЦБ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", 1)
+                                chat_sender(cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", co_conferention)
+                                chat_sender(
+                                    cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    cb + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", cb_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + cb)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(cb + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", 1)
+                                chat_sender(cb + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", co_conferention)
+                                chat_sender(
+                                    cb + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    cb + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", cb_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + cb)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1070,11 +1530,25 @@ while True:
                                 sender("Идем давать выговор ЛСПД", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lspd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", lspd_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lspd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(lspd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(lspd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    lspd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lspd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", lspd_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lspd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1093,11 +1567,25 @@ while True:
                                 sender("Идем давать выговор СФПД", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    sfpd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", sfpd_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfpd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(sfpd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(sfpd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    sfpd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    sfpd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", sfpd_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + sfpd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1116,11 +1604,25 @@ while True:
                                 sender("Идем давать выговор РКШД", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rcsd + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", rcsd_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rcsd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(rcsd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(rcsd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    rcsd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rcsd + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", rcsd_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rcsd)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1139,11 +1641,25 @@ while True:
                                 sender("Идем давать выговор СВАТ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(swat + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(swat + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    swat + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    swat + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", swat_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + swat)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(swat + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(swat + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    swat + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    swat + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", swat_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + swat)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1162,11 +1678,25 @@ while True:
                                 sender("Идем давать выговор ФБР", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(fbi + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(fbi + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    fbi + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    fbi + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", fbi_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + fbi)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(fbi + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(fbi + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", justice_conferention)
+                                chat_sender(
+                                    fbi + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    fbi + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", fbi_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + fbi)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1185,11 +1715,25 @@ while True:
                                 sender("Идем давать выговор ЛСМЦ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", health_conferention)
+                                chat_sender(
+                                    lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lsmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", lsmc_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lsmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(lsmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(lsmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", health_conferention)
+                                chat_sender(
+                                    lsmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lsmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", lsmc_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lsmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1208,11 +1752,25 @@ while True:
                                 sender("Идем давать выговор СФМЦ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", health_conferention)
+                                chat_sender(
+                                    sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    sfmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", sfmc_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(sfmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(sfmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", health_conferention)
+                                chat_sender(
+                                    sfmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    sfmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", sfmc_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + sfmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1231,11 +1789,25 @@ while True:
                                 sender("Идем давать выговор ЛВМЦ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", health_conferention)
+                                chat_sender(
+                                    lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lvmc + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", lvmc_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lvmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(lvmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(lvmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", health_conferention)
+                                chat_sender(
+                                    lvmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lvmc + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", lvmc_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lvmc)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1254,11 +1826,25 @@ while True:
                                 sender("Идем давать выговор ЛСа", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", defence_conferention)
+                                chat_sender(
+                                    lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lsa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", lsa_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + lsa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(lsa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(lsa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", defence_conferention)
+                                chat_sender(
+                                    lsa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    lsa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", lsa_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + lsa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1277,11 +1863,25 @@ while True:
                                 sender("Идем давать выговор ВМС", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", defence_conferention)
+                                chat_sender(
+                                    sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    sfa + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", sfa_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + sfa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(sfa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(sfa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", defence_conferention)
+                                chat_sender(
+                                    sfa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    sfa + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", sfa_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + sfa)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1300,11 +1900,25 @@ while True:
                                 sender("Идем давать выговор ТСР", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", defence_conferention)
+                                chat_sender(
+                                    msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    msp + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", msp_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + msp)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(msp + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(msp + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", defence_conferention)
+                                chat_sender(
+                                    msp + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    msp + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", msp_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + msp)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1323,11 +1937,25 @@ while True:
                                 sender("Идем давать выговор СМИ ЛС", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", media_conferention)
+                                chat_sender(
+                                    rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rls + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", rls_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rls)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(rls + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(rls + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", media_conferention)
+                                chat_sender(
+                                    rls + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rls + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", rls_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rls)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1346,11 +1974,25 @@ while True:
                                 sender("Идем давать выговор СМИ СФ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", media_conferention)
+                                chat_sender(
+                                    rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rsf + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", rsf_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rsf)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(rsf + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(rsf + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", media_conferention)
+                                chat_sender(
+                                    rsf + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rsf + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", rsf_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rsf)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -1369,11 +2011,25 @@ while True:
                                 sender("Идем давать выговор СМИ ЛВ", id, getKeyboardByStatus())
                                 sender("За что вы хотите дать наказание?(За ...)", id, getKeyboardByStatus())
                             elif msg == "выдача нормы":
-                                chat_sender(rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",1)
+                                chat_sender(rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС", media_conferention)
+                                chat_sender(
+                                    rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rlv + ", 120 минут на поднятие нормы онлайна. По истечении срока скриншот попыток или /members следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ИГРУ!", rlv_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму онлайна " + rlv)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "выдача нормы дискорда":
-                                chat_sender(rlv + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",1)
+                                chat_sender(rlv + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС", media_conferention)
+                                chat_sender(
+                                    rlv + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    leaders_conferention)
+                                chat_sender(
+                                    rlv + ", 120 минут на поднятие нормы онлайна в дискорде. По истечении срока скриншот попыток или дискорд канала следящим в ЛС",
+                                    deputy_conferention)
+                                chat_sender("@all, В ДИСКОРД!", rlv_conferention)
                                 log("@id" + str(id) + "(Администратор) выдал норму дискорда " + rlv)
                                 sender("Выдал норму!", id, getKeyboardByStatus())
                             elif msg == "сообщение в орг. беседу":
@@ -2631,71 +3287,71 @@ while True:
                                 sender("Возращаемся обратно!", id, getKeyboardByStatus())
                             else:
                                 if target == "gcl":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, gcl_conferention)
                                     status = "menu gcl"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "stk":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, stk_conferention)
                                     status = "menu stk"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "cb":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, cb_conferention)
                                     status = "menu cb"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "lspd":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, lspd_conferention)
                                     status = "menu lspd"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "sfpd":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, sfpd_conferention)
                                     status = "menu sfpd"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "rcsd":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, rcsd_conferention)
                                     status = "menu rcsd"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "swat":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, swat_conferention)
                                     status = "menu swat"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "fbi":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, fbi_conferention)
                                     status = "menu fbi"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "lsmc":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, lsmc_conferention)
                                     status = "menu lsmc"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "sfmc":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, sfmc_conferention)
                                     status = "menu sfmc"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "lvmc":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, lvmc_conferention)
                                     status = "menu lvmc"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "lsa":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, lsa_conferention)
                                     status = "menu lsa"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "sfa":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, sfa_conferention)
                                     status = "menu sfa"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "msp":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, msp_conferention)
                                     status = "menu msp"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "rls":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, rl_conferention)
                                     status = "menu rls"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "rsf":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, rsf_conferention)
                                     status = "menu rsf"
                                     sender("Отправил!", id, getKeyboardByStatus())
                                 elif target == "rlv":
-                                    chat_sender(msg, 1)
+                                    chat_sender(msg, rlv_conferention)
                                     status = "menu rlv"
                                     sender("Отправил!", id, getKeyboardByStatus())
                         elif status == "gos online":
@@ -2713,6 +3369,7 @@ while True:
 
                     else:
                         send_noaccess_message(id, False)
+            break
 
 
     except Exception as e:
