@@ -18,8 +18,8 @@ bot_id = -1
 
 longpoll = VkBotLongPoll(vk_session, bot_id)
 
-save_file = "D:\\PycharmProjects\\\Coffe-Plantation\\bot\\load.txt"
-log_file = "D:\\PycharmProjects\\Coffe-Plantation\\bot\\log.txt"
+save_file = ""
+log_file = ""
 
 status = "main"
 
