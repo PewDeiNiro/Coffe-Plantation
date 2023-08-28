@@ -23,40 +23,40 @@ log_file = ""
 
 status = "main"
 
-gsv = "@zhenya_bruna(ГСВ)"
-gcv = "@zhenya_bruna(ГКВ)"
-st = "@zhenya_bruna(СТ)"
-judge = "@zhenya_bruna(Судья)"
-gp = "@zhenya_bruna(ГП)"
-guber = "@zhenya_bruna(Губернатор)"
-gcl = "1"
-stk = "@zhenya_bruna(СтК)"
-cb = "@zhenya_bruna(ЦБ)"
-lspd = "@zhenya_bruna(ЛСПД)"
-sfpd = "@zhenya_bruna(СФПД)"
-swat = "@zhenya_bruna(СВАТ)"
-rcsd = "@zhenya_bruna(РКШД)"
-fbi = "@zhenya_bruna(ФБР)"
-lsmc = "@zhenya_bruna(ЛСМЦ)"
-sfmc = "@zhenya_bruna(СФМЦ)"
-lvmc = "@zhenya_bruna(ЛВМЦ)"
-lsa = "@zhenya_bruna(ЛСа)"
-sfa = "@zhenya_bruna(ВМС)"
-msp = "@zhenya_bruna(ТСР)"
-rls = "@zhenya_bruna(СМИ ЛС)"
-rsf = "@zhenya_bruna(СМИ СФ)"
-rlv = "@zhenya_bruna(СМИ ЛВ)"
+gsv = ""
+gcv = ""
+st = ""
+judge = ""
+gp = ""
+guber = ""
+gcl = ""
+stk = ""
+cb = ""
+lspd = ""
+sfpd = ""
+swat = ""
+rcsd = ""
+fbi = ""
+lsmc = ""
+sfmc = ""
+lvmc = ""
+lsa = ""
+sfa = ""
+msp = ""
+rls = ""
+rsf = ""
+rlv = ""
 
 
 started_conferention = []
 
 # Developer
 
-access_dev = ["342420933"]
+access_dev = ["]
 
 # ГС/ЗГС ГОС
 
-access_full = ["475362255", "342420933"]
+access_full = [""]
 
 # Government
 
