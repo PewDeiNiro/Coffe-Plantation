@@ -9,10 +9,10 @@ import checker
 import threading
 from page import Page
 
-main_token = "e4128d88581696f9382e18f3d1852b9b463041116389f16f0b27d6c055d1dd923514e1eab8a1586369746"
+main_token = ""
 vk_session = vk_api.VkApi(token=main_token)
 
-bot_id = 213622107
+bot_id = -1
 
 
 
